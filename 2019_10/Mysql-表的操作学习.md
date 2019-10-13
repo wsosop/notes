@@ -501,7 +501,7 @@ mysql>
 
 10.4.4设置外键约束（FOREIGN KEY ,FK）
 
-```
+```mysql
 mysql> desc t_dept;
 +--------+-------------+------+-----+---------+----------------+
 | Field  | Type        | Null | Key | Default | Extra          |
