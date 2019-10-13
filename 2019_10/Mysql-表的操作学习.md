@@ -225,9 +225,9 @@ mysql>
 
  ## 9. 修改字段
 
-### 9.1修改字段的数据类型
+#### 9.1修改字段的数据类型
 
-```
+```mysql
 mysql> desc tab_dept;
 +--------+-------------+------+-----+---------+-------+
 | Field  | Type        | Null | Key | Default | Extra |
@@ -257,9 +257,9 @@ mysql>
 
 
 
-### 9.2 修改字段的名字
+#### 9.2 修改字段的名字
 
-```
+```mysql
 mysql> desc tab_dept;
 +--------+-------------+------+-----+---------+-------+
 | Field  | Type        | Null | Key | Default | Extra |
@@ -289,9 +289,9 @@ mysql>
 
 
 
-### 9.3 同时修改字段的名字和数据类型
+#### 9.3 同时修改字段的名字和数据类型
 
-```
+```mysql
 mysql> desc tab_dept;
 +----------+-------------+------+-----+---------+-------+
 | Field    | Type        | Null | Key | Default | Extra |
@@ -318,10 +318,229 @@ mysql> desc tab_dept;
 
 mysql>
 ```
-### 9.3 修改字段的顺序
+#### 9.3 修改字段的顺序
 
 **语法：ALTER TABLE 表名 MODIFY 属性名1  数据类型  FIRST|AFTER  属性名2**
 
 
 
  ## 10. 操作表约束
+
+**MySQL软件所支持的完整性约束**
+
+| 完整性约束关键字 | 含义                                          |
+| ---------------- | --------------------------------------------- |
+| NOT NULL         | 约束字段的值不能为空                          |
+| DEFAULT          | 设置字段的默认值                              |
+| UNIQUE KEY (UK)  | 约束字段的值是唯一                            |
+| PRIMARY KEY(PK)  | 约束字段为表的主键,可以作为该表记录的唯一标识 |
+| AUTO INCREMENT   | 约束字段的值为自动增加                        |
+| FOREIGN KEY (FK) | 约束字段为表的外键                            |
+
+注：      表中显示的完整性约束中, MySQL数据库管理系统不支持 check约束,即可以使用 check约束但是却没有任何效果。根据约束数据列限制,约束可分为:单列约束,即每个约束只约束一列数据:多列约束,即每个约束可以约束多列数据。
+
+
+
+#### 10.1 设置非空约束（NOT NULL ,NK）
+
+```mysql
+mysql>  create table t_dept(
+    -> deptno int(20) not null,
+    -> dname varchar(20),
+    -> loc varchar(40)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show tables;
++-------------------+
+| Tables_in_company |
++-------------------+
+| t_dept            |
++-------------------+
+1 row in set (0.00 sec)
+
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(20)     | NO   |     | NULL    |       |
+| dname  | varchar(20) | YES  |     | NULL    |       |
+| loc    | varchar(40) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
+```
+
+ 
+
+
+
+#### 10.2 设置字段的默认值（DEFAULT）
+
+```mysql
+
+mysql>  create table t_dept(
+    -> deptno int(20) not null,
+    -> dname varchar(20) default 'wck',
+    -> loc varchar(40)
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(20)     | NO   |     | NULL    |       |
+| dname  | varchar(20) | YES  |     | wck     |       |
+| loc    | varchar(40) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql>
+```
+
+
+
+#### 10.3设置唯一约束（UNIQUE,UK）
+
+```mysql
+
+mysql> create table t_dept(
+    -> deptno int(20) not null,
+    -> dname varchar(20) UNIQUE,
+    -> loc varchar(40)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(20)     | NO   |     | NULL    |       |
+| dname  | varchar(20) | YES  | UNI | NULL    |       |
+| loc    | varchar(40) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql>
+```
+
+#### 10.4设置主键约束（PRIMARY KEY ,PK）
+
+##### 10.4.1设置单字段主键约束
+
+```mysql
+
+mysql> create table t_dept(
+    -> deptno int(20) PRIMARY KEY,
+    -> dname varchar(20) ,
+    -> loc varchar(40)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> DESC t_dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(20)     | NO   | PRI | NULL    |       |
+| dname  | varchar(20) | YES  |     | NULL    |       |
+| loc    | varchar(40) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql>
+```
+
+##### 10.4.2设置多字段主键约束
+
+```
+mysql> create table t_dept(
+    -> deptno int,
+    -> dname varchar(20) ,
+    -> loc varchar(40),
+    -> constraint pk_name_deptno PRIMARY KEY(deptno,dname)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| deptno | int(11)     | NO   | PRI | NULL    |       |
+| dname  | varchar(20) | NO   | PRI | NULL    |       |
+| loc    | varchar(40) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.01 sec)
+
+mysql>
+```
+
+##### 10.4.3设置字段值自动增加（AUTO_INCREMENT）
+
+```mysql
+mysql> create table t_dept(
+    -> deptno int PRIMARY KEY AUTO_INCREMENT ,
+    -> dname varchar(20) ,
+    -> loc varchar(40)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| deptno | int(11)     | NO   | PRI | NULL    | auto_increment |
+| dname  | varchar(20) | YES  |     | NULL    |                |
+| loc    | varchar(40) | YES  |     | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+mysql>
+```
+
+10.4.4设置外键约束（FOREIGN KEY ,FK）
+
+```
+mysql> desc t_dept;
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| deptno | int(11)     | NO   | PRI | NULL    | auto_increment |
+| dname  | varchar(20) | YES  |     | NULL    |                |
+| loc    | varchar(40) | YES  |     | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+3 rows in set (0.01 sec)
+
+mysql> create table t_employee(
+    -> empno int primary key,
+    -> ename varchar(20),
+    -> job varchar(40),
+    -> MGR int,
+    -> Hiredate date,
+    -> sal double(10,2),
+    -> comm double(10,2),
+    -> deptno int,
+    -> constraint fk_deptno foreign key(deptno)
+    -> references t_dept(deptno)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> desc t_employee;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| empno    | int(11)      | NO   | PRI | NULL    |       |
+| ename    | varchar(20)  | YES  |     | NULL    |       |
+| job      | varchar(40)  | YES  |     | NULL    |       |
+| MGR      | int(11)      | YES  |     | NULL    |       |
+| Hiredate | date         | YES  |     | NULL    |       |
+| sal      | double(10,2) | YES  |     | NULL    |       |
+| comm     | double(10,2) | YES  |     | NULL    |       |
+| deptno   | int(11)      | YES  | MUL | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql>
+```
+
