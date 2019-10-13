@@ -20,3 +20,64 @@
 1.在查询中很少被使用的字段。  
 
 2.拥有许多重复值的字段。
+
+
+
+## 2.创建和查看普通索引
+
+#### 2.1创建表时创建普通索引
+
+```mysql
+mysql> create table t_dept(
+    -> deptno int,
+    -> dname varchar(20) ,
+    -> loc varchar(40),
+    -> index index_deptno(deptno)
+    -> );
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> show create table t_dept\G;
+*************************** 1. row ***************************
+       Table: t_dept
+Create Table: CREATE TABLE `t_dept` (
+  `deptno` int(11) DEFAULT NULL,
+  `dname` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
+  `loc` varchar(40) CHARACTER SET latin1 DEFAULT NULL,
+  KEY `index_deptno` (`deptno`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+1 row in set (0.00 sec)
+
+ERROR:
+No query specified
+
+mysql>
+
+```
+
+校验数据库表t_dept 中索引 是否被使用 执行sql语句 explain 
+
+   --执行结果显示,由于possible keys和key字段处的值都为所创建的索引名 index_deptno,则说明该索引已经存在,而且已经开始启用。
+
+```mysql
+mysql> explain select * from t_dept where deptno=1\G;
+*************************** 1. row ***************************
+           id: 1
+  select_type: SIMPLE
+        table: t_dept
+   partitions: NULL
+         type: ref
+possible_keys: index_deptno
+          key: index_deptno
+      key_len: 5
+          ref: const
+         rows: 1
+     filtered: 100.00
+        Extra: NULL
+1 row in set, 1 warning (0.00 sec)
+
+ERROR:
+No query specified
+
+mysql>
+```
+
