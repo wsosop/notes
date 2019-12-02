@@ -3,13 +3,13 @@
 #### 时间类：
 
 **java.util.Date(基本废弃，Deprecated)**
-	**–getTime()，返回自1970.1.1以来的毫秒数 【现在保留的一个常用的方法】**
-**• <u>java.sql.Date（和数据库对应的时间类</u>）**
-**• Calendar是目前程序中最常用的，但是是<u>抽象类</u>**
-	**–Calendar gc=Calendar.getInstance();**
-	**–Calendar gc= new GregorianCalendar();**
-	**–<u>简单工厂模式</u>**
-	**–查看CalendarClassTest.java**
+**–---getTime()，返回自1970.1.1以来的毫秒数 【现在保留的一个常用的方法】**
+**• java.sql.Date（和数据库对应的时间类）**
+**• Calendar是目前程序中最常用的，但是是抽象类**
+**–---Calendar gc=Calendar.getInstance();**
+**–---Calendar gc= new GregorianCalendar();**
+**–---简单工厂模式**
+**–---查看CalendarClassTest.java**
 
 ```java
 package com.wck;
