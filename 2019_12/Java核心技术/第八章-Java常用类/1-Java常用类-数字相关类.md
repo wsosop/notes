@@ -103,7 +103,7 @@ public class BigDecimalTest {
 
 
 
-#### Random：
+#### 三、Random：
 
 **Random 随机数**
 **–nextInt() 返回一个随机int**
@@ -197,7 +197,7 @@ public class Test {
 
 
 
-#### java.lang.Math
+#### 四、java.lang.Math
 
 ​	**–绝对值函数abs**
 ​	**–对数函数log**
