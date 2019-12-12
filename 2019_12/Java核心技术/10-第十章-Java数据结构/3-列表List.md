@@ -112,7 +112,7 @@ The third element is  4
 **–以双向链表实现的列表，不支持同步**  
 **• List list = Collections.synchronizedList(new LinkedList(...));**  
 **–可被当作堆栈、队列和双端队列进行操作**  
-**–顺序访问高效，随机访问较差，中间插入和删除高效 **   
+**–顺序访问高效，随机访问较差，中间插入和删除高效**   
 **–适用于经常变化的数据**  
 **–查看程序LinkedListTest.java**  
 
