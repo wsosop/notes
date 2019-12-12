@@ -2,13 +2,13 @@
 
 #### String：
 
-**1• Java中使用频率最高的类**
-**2• 是一个不可变对象，加减操作性能较差**
-**3• 以下方法需要牢记：charAt, concat, contains, endsWith,equals,** 
-										**equalsIgnoreCase, hashCode, indexOf, length, matches, replace,** 
-										**replaceAll, split, startsWith, subString, trim, valueOf**
+**1• Java中使用频率最高的类**  
+**2• 是一个不可变对象，加减操作性能较差**  
+**3• 以下方法需要牢记：charAt, concat, contains, endsWith,equals,**   
+										**equalsIgnoreCase, hashCode, indexOf, length, matches, replace,**   
+										**replaceAll, split, startsWith, subString, trim, valueOf**    
 
-**–查看StringTest.java**
+**–查看StringTest.java**  
 
 ```java
 
@@ -55,14 +55,14 @@ public class StringTest {
 
 #### 可变字符串
 
-​	**–StringBuffer（字符串加减，同步，性能好）**
-​	**–StringBuilder（字符串加减，不同步，性能更好）**
-**• StringBuffer/StringBuilder： 方法一样，区别在同步**
-​	**–append/insert/delete/replace/substring**
-​	**–length 字符串实际大小，capacity字符串占用空间大小**
-​	**–trimToSize(): 去除空隙，将字符串存储压缩到实际大小**
-​	**–如有大量append，事先预估大小，再调用相应构造函数**
-​	**–查看相关代码**
+​	**–StringBuffer（字符串加减，同步，性能好）**  
+​	**–StringBuilder（字符串加减，不同步，性能更好）**  
+**• StringBuffer/StringBuilder： 方法一样，区别在同步**  
+​	**–append/insert/delete/replace/substring**  
+​	**–length 字符串实际大小，capacity字符串占用空间大小**  
+​	**–trimToSize(): 去除空隙，将字符串存储压缩到实际大小**  
+​	**–如有大量append，事先预估大小，再调用相应构造函数**  
+​	**–查看相关代码**  
 
 ```java
 
