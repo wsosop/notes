@@ -4,8 +4,8 @@
 
 ------
 
-**–包名以 java 开始的包是 Java 核心包 (Java Core Package)** 
-**–包名以 javax 开始的包是 Java 扩展包 (Java Extension Package)** 
+**–包名以 java 开始的包是 Java 核心包 (Java Core Package)**   
+**–包名以 javax 开始的包是 Java 扩展包 (Java Extension Package)**   
 
 
 
@@ -13,13 +13,13 @@
 
 ------
 
-**Java 数字类**
-	**–整数 Short, Int, Long**
-	**–浮点数 Float, Double**
-	**–大数类 BigInteger(大整数), BigDecimal(大浮点数) [这两个类型就不做限制了，内存能表示多大，就可以		表示多大]**
-	**–随机数类 Random**
-	**–工具类 Math**
-**• java.math包**
+**Java 数字类**  
+	**–整数 Short, Int, Long**  
+	**–浮点数 Float, Double**  
+	**–大数类 BigInteger(大整数), BigDecimal(大浮点数) [这两个类型就不做限制了，内存能表示多大，就可以		表示多大]**  
+	**–随机数类 Random**  
+	**–工具类 Math**  
+**• java.math包**   
 
 BigInteger:
 
@@ -105,13 +105,13 @@ public class BigDecimalTest {
 
 #### 三、Random：
 
-**Random 随机数**
-**–nextInt() 返回一个随机int**
-**–nextInt(int a) 返回一个[0,a)之间的随机int**
-**–nextDouble()返回一个[0.0,1.0]之间double**
-**–ints 方法批量返回随机数数组**
-**• Math.random() 返回一个[0.0,1.0]之间double**
-**• 查看RandomTest.java**
+**Random 随机数**  
+**–nextInt() 返回一个随机int**  
+**–nextInt(int a) 返回一个[0,a)之间的随机int**  
+**–nextDouble()返回一个[0.0,1.0]之间double**  
+**–ints 方法批量返回随机数数组**  
+**• Math.random() 返回一个[0.0,1.0]之间double**  
+**• 查看RandomTest.java**  
 
 ```java
 package com.wck;
@@ -199,13 +199,13 @@ public class Test {
 
 #### 四、java.lang.Math
 
-​	**–绝对值函数abs**
-​	**–对数函数log**
-​	**–比较函数max、min**
-​	**–幂函数pow**
-​	**–四舍五入函数round等**
-​	**–向下取整floor**
-​	**–向上取整ceil**
+​	**–绝对值函数abs**  
+​	**–对数函数log**  
+​	**–比较函数max、min**  
+​	**–幂函数pow**  
+​	**–四舍五入函数round等**  
+​	**–向下取整floor**  
+​	**–向上取整ceil**  
 
 **• 查看MathTest.java**
 
