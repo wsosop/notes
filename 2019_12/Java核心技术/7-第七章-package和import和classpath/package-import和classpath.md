@@ -13,8 +13,8 @@
 ------
 
 **import规则**
-**–import必须全部放在package之后，类定义之前。**
-**–多个import的顺序无关**。
+ 	**–import必须全部放在package之后，类定义之前。**
+ 	**–多个import的顺序无关。**
 
 import 使用方法一：
 
