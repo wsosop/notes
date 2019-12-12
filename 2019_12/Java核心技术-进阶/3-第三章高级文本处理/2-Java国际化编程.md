@@ -2,89 +2,89 @@
 
 ## Java国际化编程
 
-**国际化编程**
-**• Internationalization, 缩写为i18n.** 
-**• 多语言版本的软件**
-**– 一套软件，多个语言包**
-**– 根据语言设定，可以切换显示文本**
+**国际化编程**  
+**• Internationalization, 缩写为i18n.**   
+**• 多语言版本的软件**  
+**– 一套软件，多个语言包**  
+**– 根据语言设定，可以切换显示文本**  
 
 
 
-**Java国际化编程**
-**• Java是第一个设计成支持国际化的编程语言**
-**– java.util.ResourceBundle 用于加载一个语言_国家语言包
-– java.util.Locale 定义一个语言_国家**
-**– java.text.MessageFormat 用于格式化带占位符的字符串**
-**– java.text.NumberFormat 用于格式化数字/金额**
-**– java.text.DateFormat用于格式化日期时间**
-**– java.time.format.DateTimeFormatter用于格式化日期时间**
-**(后4个Format参见《Java核心技术》第8章)**
+**Java国际化编程**  
+**• Java是第一个设计成支持国际化的编程语言**  
+**– java.util.ResourceBundle 用于加载一个语言_国家语言包  
+– java.util.Locale 定义一个语言_国家**  
+**– java.text.MessageFormat 用于格式化带占位符的字符串**  
+**– java.text.NumberFormat 用于格式化数字/金额**  
+**– java.text.DateFormat用于格式化日期时间**  
+**– java.time.format.DateTimeFormatter用于格式化日期时间**  
+**(后4个Format参见《Java核心技术》第8章)**  
 
 
 
-**Locale类**
-**• Locale(zh_CN, en_US,…)**
-**– 语言，zh，en等**
-**– 国家/地区，CN，US等**
-**– 其他变量(variant)(几乎不用)**
-**• Locale方法**
-**– getAvailableLocales()返回所有的可用Locale**
-**– getDefault()返回默认的Locale**
+**Locale类**  
+**• Locale(zh_CN, en_US,…)**  
+**– 语言，zh，en等**  
+**– 国家/地区，CN，US等**  
+**– 其他变量(variant)(几乎不用)**  
+**• Locale方法**  
+**– getAvailableLocales()返回所有的可用Locale**  
+**– getDefault()返回默认的Locale**  
 
 
 
-**语言文件(1)**
-**• 语言文件**
-**– 一个Properties文件 (参见《Java核心技术》第十章)**
-**– 包含K-V对，每行一个K-V，例如：age=20**
-**– 命名规则**
-**• 包名+语言+国家地区.properties, (语言和国家地区可选)**
-**• message.properties**
-**• message_zh.properties**
-**• message_zh_CN.properties**
+**语言文件(1)**  
+**• 语言文件**  
+**– 一个Properties文件 (参见《Java核心技术》第十章)**  
+**– 包含K-V对，每行一个K-V，例如：age=20**  
+**– 命名规则**  
+**• 包名+语言+国家地区.properties, (语言和国家地区可选)**  
+**• message.properties **   
+**• message_zh.properties**   
+**• message_zh_CN.properties**  
 
 
 
-**语言文件(2)**
-**• 语言文件**
-**– 存储文件必须是ASCII码文件**
-**– 如果是ASCII以外的文字，必须用Unicode的表示\uxxxx**
-**– 可以采用native2ascii.exe (%JAVA_HOME%\bin目录下)进行转码**
+**语言文件(2)**  
+**• 语言文件**  
+**– 存储文件必须是ASCII码文件**  
+**– 如果是ASCII以外的文字，必须用Unicode的表示\uxxxx**  
+**– 可以采用native2ascii.exe (%JAVA_HOME%\bin目录下)进行转码**  
 
 
 
-**ResourceBundle类(1)**
-**• ResourceBundle**
-**– 根据Locale要求，加载语言文件(Properties文件)**
-**– 存储语言集合中所有的K-V对**
-**– getString(String key) 返回所对应的value**
+**ResourceBundle类(1)**  
+**• ResourceBundle**  
+**– 根据Locale要求，加载语言文件(Properties文件)**  
+**– 存储语言集合中所有的K-V对**  
+**– getString(String key) 返回所对应的value**  
 
 
 
-**ResourceBundle类(2)**
-**• ResourceBundle 根据key找value的查找路径**
-**– 包名_当前Locale语言_当前Locale国家地区_当前Locale变量(variant)
-– 包名_当前Locale语言_当前Locale国家地区
-– 包名_当前Locale语言**
-**– 包名_默认Locale语言_默认Locale国家地区_默认Locale变量(variant)
-– 包名_默认Locale语言_默认Locale国家地区
-– 包名_默认Locale语言**
-**– 包名**
+**ResourceBundle类(2)**  
+**• ResourceBundle 根据key找value的查找路径**  
+**– 包名_当前Locale语言_当前Locale国家地区_当前Locale变量(variant)  
+– 包名_当前Locale语言_当前Locale国家地区  
+– 包名_当前Locale语言**  
+**– 包名_默认Locale语言_默认Locale国家地区_默认Locale变量(variant)  
+– 包名_默认Locale语言_默认Locale国家地区  
+– 包名_默认Locale语言**  
+**– 包名**  
 
 
 
-**其他国际化**
-**• 日期/时间国际化**
-**– DateTimeFormatter和Locale的结合**
-**• 数字/金额国际化**
-**– NumberFormat和Locale结合**
+**其他国际化**  
+**• 日期/时间国际化**  
+**– DateTimeFormatter和Locale的结合**  
+**• 数字/金额国际化**  
+**– NumberFormat和Locale结合**  
 
 
 
-**总结**
-**• Java国际化总结**
-**– ResourceBundle和Locale类**
-**– Properties文件的制作和native2ascii的转化**
+**总结**  
+**• Java国际化总结**  
+**– ResourceBundle和Locale类**  
+**– Properties文件的制作和native2ascii的转化**   
 
 
 
