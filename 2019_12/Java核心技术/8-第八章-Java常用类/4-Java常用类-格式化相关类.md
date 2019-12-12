@@ -1,23 +1,23 @@
 ## Java常用类-格式化相关类
 
-**java.text包java.text.Format的子类**
-    **–NumberFormat：数字格式化，抽象类**
-**• DecimalFormat**
-    **–MessageFormat：字符串格式化**
-    **–DateFormat：日期/时间格式化，抽象类**
-**• SimpleDateFormat**
-**• java.time.format包下（Java8引入的）**
-    **–DateTimeFormatter**
+**java.text包java.text.Format的子类**  
+    **–NumberFormat：数字格式化，抽象类**  
+**• DecimalFormat**  
+    **–MessageFormat：字符串格式化**  
+    **–DateFormat：日期/时间格式化，抽象类**  
+**• SimpleDateFormat**  
+**• java.time.format包下（Java8引入的）**  
+    **–DateTimeFormatter**  
 
 #### 一：
 
 ------
 
-**NumberFormat：数字格式化，抽象类**
-    **–DecimalFormat 工厂模式**
-    **–例如：将1234567格式化输出为1,234,567**
-**• 查看DecimalFormaterRuleTest.java**
-**• 查看DecimalFormatTest.java**
+**NumberFormat：数字格式化，抽象类**  
+    **–DecimalFormat 工厂模式**  
+    **–例如：将1234567格式化输出为1,234,567 **  
+**• 查看DecimalFormaterRuleTest.java**  
+**• 查看DecimalFormatTest.java**  
 
 ```java
 import java.text.DecimalFormat;
@@ -115,10 +115,10 @@ public class DecimalFormatTest {
 
 ------
 
-**MessageFormat：字符串格式化**
-    **–支持多个参数-值对位复制文本**
-    **–支持变量的自定义格式**
-    **–例如将”Hello {1}”根据变量值格式化为Hello World**
+**MessageFormat：字符串格式化**  
+    **–支持多个参数-值对位复制文本**  
+    **–支持变量的自定义格式**  
+    **–例如将”Hello {1}”根据变量值格式化为Hello World**  
 **• 查看MessageFormatTest.java**
 
 ```java
@@ -153,11 +153,11 @@ public class MessageFormatTest {
 
 ------
 
-**DateFormat：时间格式化，抽象类**
-    **–SimpleDateFormat 工厂模式**
-    **–parse：将字符串格式化为时间对象**
-    **–format：将时间对象格式化为字符串**
-    **–如将当前时间转为化YYYY-MM-DD HH24:MI:SS输出**
+**DateFormat：时间格式化，抽象类**  
+    **–SimpleDateFormat 工厂模式**  
+    **–parse：将字符串格式化为时间对象**  
+    **–format：将时间对象格式化为字符串**  
+    **–如将当前时间转为化YYYY-MM-DD HH24:MI:SS输出**  
 **• 查看SimpleDateFormatTest.java**
 
 ```java
@@ -196,12 +196,12 @@ public class SimpleDateTest {
 
 ------
 
-**java.time.format.DateFormatter：时间格式化**
-    **–JDK 8 发布，线程安全(vs SimpleDateFormat 线程不安全)**
-    **–ofPattern: 设定时间格式**
-    **–parse：将字符串格式化为时间对象**
-    **–format：将时间对象格式化为字符串**
-    **–如将当前时间转为化YYYY-MM-DD HH24:MI:SS输出**
+**java.time.format.DateFormatter：时间格式化**  
+    **–JDK 8 发布，线程安全(vs SimpleDateFormat 线程不安全)**  
+    **–ofPattern: 设定时间格式**  
+    **–parse：将字符串格式化为时间对象**  
+    **–format：将时间对象格式化为字符串**  
+    **–如将当前时间转为化YYYY-MM-DD HH24:MI:SS输出**  
 **• 查看DateFormatterTest.java**
 
 ```java
