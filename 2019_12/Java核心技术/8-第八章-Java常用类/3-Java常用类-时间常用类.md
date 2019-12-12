@@ -2,14 +2,14 @@
 
 #### 时间类：
 
-**java.util.Date(基本废弃，Deprecated)**
-**–---getTime()，返回自1970.1.1以来的毫秒数 【现在保留的一个常用的方法】**
-**• java.sql.Date（和数据库对应的时间类）**
-**• Calendar是目前程序中最常用的，但是是抽象类**
-**–---Calendar gc=Calendar.getInstance();**
-**–---Calendar gc= new GregorianCalendar();**
-**–---简单工厂模式**
-**–---查看CalendarClassTest.java**
+**java.util.Date(基本废弃，Deprecated)**  
+**–---getTime()，返回自1970.1.1以来的毫秒数 【现在保留的一个常用的方法】**  
+**• java.sql.Date（和数据库对应的时间类）**  
+**• Calendar是目前程序中最常用的，但是是抽象类**  
+**–---Calendar gc=Calendar.getInstance();**  
+**–---Calendar gc= new GregorianCalendar();**  
+**–---简单工厂模式**  
+**–---查看CalendarClassTest.java**  
 
 ```java
 package com.wck;
@@ -41,12 +41,12 @@ public class Test {
 
 #### Calendar:
 
-​	**–get(Field) 来获取时间中每个属性的值. 注意，<u>月份0-11.</u>**
-​	**–getTime()，返回相应的Date对象**
-​	**–getTimeInMillis(), 返回自1970.1.1以来的毫秒数**
-​	**–set(Field) 设置时间字段**
-​	**–add(field, amount) 根据指定字段增加/减少时间**
-​	**–roll(field, amount) 根据指定字段增加/减少时间，但不影响上一级的时间段**
+​	**–get(Field) 来获取时间中每个属性的值. 注意，<u>月份0-11.</u>**  
+​	**–getTime()，返回相应的Date对象**  
+​	**–getTimeInMillis(), 返回自1970.1.1以来的毫秒数**  
+​	**–set(Field) 设置时间字段**  
+​	**–add(field, amount) 根据指定字段增加/减少时间**  
+​	**–roll(field, amount) 根据指定字段增加/减少时间，但不影响上一级的时间段**  
 
 ```java
 import java.util.Calendar;
@@ -176,32 +176,32 @@ public class CalendarTest {
 
 #### Java 8 推出新的时间API
 
-**–java.time包**
-**–旧的设计不好 （重名的类、线程不安全等）**
-**–新版本优点**
-	**• 不变性，在多线程环境下**
-	**• 遵循设计模式，设计得更好，可扩展性强**
+**–java.time包**  
+**–旧的设计不好 （重名的类、线程不安全等）**  
+**–新版本优点**  
+	**• 不变性，在多线程环境下**  
+	**• 遵循设计模式，设计得更好，可扩展性强**  
 
 
 
 #### • Java 8 时间包概述
 
-​    **–<u>java.time包：新的Java日期/时间API的基础包</u>**
-​	**–java.time.chrono包：为非ISO的日历系统定义了一些泛化的API，**
-​	**–java.time.format包：格式化和解析日期时间对象的类**
-​	**–java.time.temporal包：包含一些时态对象，可以用其找出关于日期/时间对象的某个特定日期或时间**
+​    **–<u>java.time包：新的Java日期/时间API的基础包</u>**  
+​	**–java.time.chrono包：为非ISO的日历系统定义了一些泛化的API，**  
+​	**–java.time.format包：格式化和解析日期时间对象的类**  
+​	**–java.time.temporal包：包含一些时态对象，可以用其找出关于日期/时间对象的某个特定日期或时间**   
 
-​    **–java.time.zone包：包含支持不同时区以及相关规则的类**
+​    **–java.time.zone包：包含支持不同时区以及相关规则的类**  
 
 
 
 #### Java 8 java.time包主要类
 
-​	**–LocalDate：日期类**
-​	**–LocalTime：时间类(时分秒-纳秒)**
-​	**–LocalDateTime: LocalDate + LocalTime**
-​	**–Instant: 时间戳**
-​	**• 查看java.time的示例代码**
+​	**–LocalDate：日期类**  
+​	**–LocalTime：时间类(时分秒-纳秒)**  
+​	**–LocalDateTime: LocalDate + LocalTime**  
+​	**–Instant: 时间戳**  
+​	**• 查看java.time的示例代码**  
 
 ```java
 import java.time.LocalDate;
@@ -397,7 +397,7 @@ public class DateUtil {
 
 **总结**
 
-**• 当前多数程序还是使用Calendar类**
+**• 当前多数程序还是使用Calendar类**     
 
-**• 学习Java 8 的时间新特性并**
+**• 学习Java 8 的时间新特性并**  
 
