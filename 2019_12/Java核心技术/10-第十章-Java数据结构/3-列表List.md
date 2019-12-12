@@ -1,25 +1,25 @@
 ## 列表List
 
-**• List：列表**
-**–有序的Collection**
-**–允许重复元素**
-**–{1，2，4，{5，2}，1，3}**
-**• List 主要实现**
-**–ArrayList(非同步的)不是线程安全的**
-**–LinkedList(非同步)不是线程安全的**           
-**–Vector(同步)是线程安全的**
+**• List：列表**  
+**–有序的Collection**  
+**–允许重复元素**  
+**–{1，2，4，{5，2}，1，3}**  
+**• List 主要实现**  
+**–ArrayList(非同步的)不是线程安全的**  
+**–LinkedList(非同步)不是线程安全的**   
+**–Vector(同步)是线程安全的**  
 
 ------
 
-**• ArrayList：**
-**–以数组实现的列表，不支持同步**
-<u>**• List list = Collections.synchronizedList(new ArrayList(...));**</u>
-**–利用索引位置可以快速定位访问**
-**–不适合指定位置的插入、删除操作**
-**–适合变动不大，主要用于查询的数据**
-**–和Java数组相比，其容量是可动态调整的**
-**–ArrayList在元素填满容器时会自动扩充容器大小的50%**
-**–查看程序ArrayListTest.java**
+**• ArrayList：**  
+**–以数组实现的列表，不支持同步**  
+<u>**• List list = Collections.synchronizedList(new ArrayList(...));**</u>  
+**–利用索引位置可以快速定位访问**  
+**–不适合指定位置的插入、删除操作**  
+**–适合变动不大，主要用于查询的数据**  
+**–和Java数组相比，其容量是可动态调整的**  
+**–ArrayList在元素填满容器时会自动扩充容器大小的50%**  
+**–查看程序ArrayListTest.java**  
 
 ```java
 package com.wck;
@@ -108,13 +108,13 @@ The third element is  4
 
 
 
-**• LinkedList：**
-**–以双向链表实现的列表，不支持同步**
-**• List list = Collections.synchronizedList(new LinkedList(...));**
-**–可被当作堆栈、队列和双端队列进行操作**
-**–顺序访问高效，随机访问较差，中间插入和删除高效**
-**–适用于经常变化的数据**
-**–查看程序LinkedListTest.java**
+**• LinkedList：**  
+**–以双向链表实现的列表，不支持同步**  
+**• List list = Collections.synchronizedList(new LinkedList(...));**  
+**–可被当作堆栈、队列和双端队列进行操作**  
+**–顺序访问高效，随机访问较差，中间插入和删除高效 **   
+**–适用于经常变化的数据**  
+**–查看程序LinkedListTest.java**  
 
 ```java
 package com.wck;
@@ -326,13 +326,13 @@ Test times = 10000
 
 
 
-**• Vector(同步)**
-**–和ArrayList类似，可变数组实现的列表，是使用数组进行实现的**
-**–<u>Vector同步，适合在多线程下使用</u>**
-**–原先不属于JCF框架，属于Java最早的数据结构，性能较差**
-**–从JDK1.2开始，Vector被重写，并纳入到JCF**
-**<u>–官方文档建议在非同步情况下，优先采用ArrayList</u>**
-**–查看程序VectorTest.java**
+**• Vector(同步)**  
+**–和ArrayList类似，可变数组实现的列表，是使用数组进行实现的**  
+**–<u>Vector同步，适合在多线程下使用</u>**  
+**–原先不属于JCF框架，属于Java最早的数据结构，性能较差**  
+**–从JDK1.2开始，Vector被重写，并纳入到JCF**  
+**<u>–官方文档建议在非同步情况下，优先采用ArrayList</u>**  
+**–查看程序VectorTest.java**  
 
 ```java
 package com.wck;
@@ -427,8 +427,8 @@ public class VectorTest {
 
 
 
-**• 总结**
-**–ArrayList/LinkedList/Vector**
-**–同步采用Vector**
-**–非同步情况下，根据数据操作特点选取ArrayList/LinkedList**
+**• 总结**  
+**–ArrayList/LinkedList/Vector**  
+**–同步采用Vector**  
+**–非同步情况下，根据数据操作特点选取ArrayList/LinkedList**  
 
