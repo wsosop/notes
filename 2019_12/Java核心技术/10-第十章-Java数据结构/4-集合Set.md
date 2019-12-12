@@ -1,28 +1,28 @@
 ## 集合Set
 
-**• 集合 Set**
-**–确定性：对任意对象都能判定其是否属于某一个集合**
-**–互异性：集合内每个元素都是无差异的，注意是内容差异**
-**–无序性：集合内的顺序无关**
+**• 集合 Set**  
+**–确定性：对任意对象都能判定其是否属于某一个集合**  
+**–互异性：集合内每个元素都是无差异的，注意是内容差异**  
+**–无序性：集合内的顺序无关**  
 
 
 
-**• Java中的集合接口Set**
-**–HashSet （基于散列函数的集合，无序，不支持同步）**
-**–TreeSet (基于树结构的集合，可排序的，不支持同步)**
-**–LinkedHashSet(基于散列函数和双向链表的集合，可排序的，不支持同步)**
+**• Java中的集合接口Set**  
+**–HashSet （基于散列函数的集合，无序，不支持同步）**  
+**–TreeSet (基于树结构的集合，可排序的，不支持同步)**  
+**–LinkedHashSet(基于散列函数和双向链表的集合，可排序的，不支持同步)**  
 
 
 
 **• HashSet**
-**–<u>基于HashMap实现的，可以容纳null元素, 不支持同步</u>**
-**• Set s = Collections.synchronizedSet(new HashSet(...));**
-**–add 添加一个元素**
-**–clear 清除整个HashSet**
-**–contains 判定是否包含一个元素**
-**–remove 删除一个元素 size 大小**
-**–retainAll 计算两个集合交集**
-**–查看HashSetTest.java了解其基本用法**
+**–<u>基于HashMap实现的，可以容纳null元素, 不支持同步</u>**  
+**• Set s = Collections.synchronizedSet(new HashSet(...));**  
+**–add 添加一个元素**  
+**–clear 清除整个HashSet**  
+**–contains 判定是否包含一个元素**  
+**–remove 删除一个元素 size 大小**  
+**–retainAll 计算两个集合交集**  
+**–查看HashSetTest.java了解其基本用法**  
 
 
 
@@ -139,16 +139,16 @@ null
 
 
 
-**• LinkedHashSet**
-**–继承HashSet，也是基于HashMap实现的，可以容纳null元素**
-**–不支持同步**
-**• Set s = Collections.synchronizedSet(new LinkedHashSet(...));**
-**–方法和HashSet基本一致**
-**• add, clear, contains, remove, size**
-**–<u>通过一个双向链表维护插入顺序</u>**
-**–查看LinkedHashSetTest.java了解其基本用法**
+**• LinkedHashSet**  
+**–继承HashSet，也是基于HashMap实现的，可以容纳null元素**  
+**–不支持同步**  
+**• Set s = Collections.synchronizedSet(new LinkedHashSet(...));**  
+**–方法和HashSet基本一致**  
+**• add, clear, contains, remove, size**  
+**–<u>通过一个双向链表维护插入顺序</u>**  
+**–查看LinkedHashSetTest.java了解其基本用法**   
 
-**<u>注：LinkedHashSet 是保留顺序的，其遍历顺序和插入顺序是一致的；而hashSet没有保留顺序，通过遍历是无序的</u>**
+**<u>注：LinkedHashSet 是保留顺序的，其遍历顺序和插入顺序是一致的；而hashSet没有保留顺序，通过遍历是无序的</u>**    
 
 
 
@@ -244,17 +244,17 @@ null
 
 
 
-**• TreeSet**
-**–基于TreeMap实现的，<u>不可以容纳null元素</u>，不支持同步**
-**• SortedSet s = Collections.synchronizedSortedSet(new TreeSet(...));**
-**–add 添加一个元素**
-**–clear 清除整个TreeSet**
-**–contains 判定是否包含一个元素**
-**–remove 删除一个元素 size 大小**
-**–根据compareTo方法或指定Comparator排序**
-**–查看TreeSetTest.java了解其基本用法**
+**• TreeSet**  
+**–基于TreeMap实现的，<u>不可以容纳null元素</u>，不支持同步**  
+**• SortedSet s = Collections.synchronizedSortedSet(new TreeSet(...));**  
+**–add 添加一个元素**  
+**–clear 清除整个TreeSet**  
+**–contains 判定是否包含一个元素**  
+**–remove 删除一个元素 size 大小**  
+**–根据compareTo方法或指定Comparator排序**  
+**–查看TreeSetTest.java了解其基本用法**       
 
-**<u>注：HashSet 遍历是无序的，LinkHashSet遍历是根据插入顺序的，而TreeSet遍历是从小到大排好序的</u>**
+**<u>注：HashSet 遍历是无序的，LinkHashSet遍历是根据插入顺序的，而TreeSet遍历是从小到大排好序的</u>**   
 
 ```java
 package com.wck;
@@ -349,16 +349,16 @@ public class TreeSetTest {
 
 
 
-**对比上面三个set：可以分为两大类 一类为 HashSet和LinkedHashSet判定元素重复的原则 另一类为：TreeSet判定元素重复的原则**
+**对比上面三个set：可以分为两大类 一类为 HashSet和LinkedHashSet判定元素重复的原则 另一类为：TreeSet判定元素重复的原则**  
 
-**• HashSet, LinkedHashSet, TreeSet的元素都只能是对象**
-**<u>• HashSet和LinkedHashSet判定元素重复的原则</u>**
-**–判定两个元素的hashCode返回值是否相同，若不同，返回false**
-**–若两者hashCode相同，判定equals方法，若不同，返回false；否则返回true。**
-**–hashCode和equals方法是所有类都有的，因为Object类有**
-**<u>• TreeSet判定元素重复的原则</u>**
-**–需要元素继承自Comparable接口**
-**–比较两个元素的compareTo方法**
+**• HashSet, LinkedHashSet, TreeSet的元素都只能是对象**  
+**<u>• HashSet和LinkedHashSet判定元素重复的原则</u>**  
+**–判定两个元素的hashCode返回值是否相同，若不同，返回false**  
+**–若两者hashCode相同，判定equals方法，若不同，返回false；否则返回true。**  
+**–hashCode和equals方法是所有类都有的，因为Object类有**  
+**<u>• TreeSet判定元素重复的原则</u>**  
+**–需要元素继承自Comparable接口**  
+**–比较两个元素的compareTo方法**  
 
 ```java
 package com.wck;
@@ -596,7 +596,7 @@ public class ObjectTreeSetTest {
 
 
 
-**• 总结**
-**–HashSet、LinkedHashSet、TreeSet**
-**–注意不同Set判定元素重复的原则**
+**• 总结**  
+**–HashSet、LinkedHashSet、TreeSet**  
+**–注意不同Set判定元素重复的原则**  
 
