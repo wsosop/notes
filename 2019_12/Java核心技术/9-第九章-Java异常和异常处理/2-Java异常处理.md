@@ -216,7 +216,7 @@ public class Son extends Father {
 
 
 
-**总结**
+**总结**  
 **–try-catch-finally**  
 **–throws声明异常**  
 **–子类重写的方法所声明的异常不能超出父类方法声明的范围**  
