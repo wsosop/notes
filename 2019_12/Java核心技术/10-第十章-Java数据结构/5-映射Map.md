@@ -1,24 +1,24 @@
 ## 映射Map
 
-**• Map映射**
-**–数学定义：两个集合之间的元素对应关系。**
-**–一个输入对应到一个输出**
-**–{1，张三}，{2，李四}，{Key，Value}，键值对，K-V对**
-**• Java中Map**
-**–Hashtable（同步，慢，数据量小） ---注意这个是 小写的table**
-**–HashMap（不支持同步，快，数据量大）**
-**–Properties (同步，文件形式，数据量小)**
+**• Map映射**  
+**–数学定义：两个集合之间的元素对应关系。**  
+**–一个输入对应到一个输出**  
+**–{1，张三}，{2，李四}，{Key，Value}，键值对，K-V对**  
+**• Java中Map**  
+**–Hashtable（同步，慢，数据量小） ---注意这个是 小写的table**  
+**–HashMap（不支持同步，快，数据量大）**  
+**–Properties (同步，文件形式，数据量小)**  
 
 
 
-**• Hashtable**
-**<u>–K-V对，K和V都不允许为null</u>**
-**–同步，多线程安全**
-**–无序的**
-**–适合小数据量**
-**–主要方法：clear, contains/containsValue, containsKey, get,** 
-**put,remove, size**
-**–通过HashtableTest.java 了解其基本用法**
+**• Hashtable**  
+**<u>–K-V对，K和V都不允许为null</u>**  
+**–同步，多线程安全**  
+**–无序的**  
+**–适合小数据量**  
+**–主要方法：clear, contains/containsValue, containsKey, get,**   
+**put,remove, size**  
+**–通过HashtableTest.java 了解其基本用法**  
 
 ```java
 package com.wck;
@@ -142,13 +142,13 @@ size: 0
 
 
 
-**• HashMap**
-**–K-V对，K和V都允许为null**
-**–不同步，多线程不安全**
-**• Map m = Collections.synchronizedMap(new HashMap(...));**
-**–无序的**
-**–主要方法：clear, containsValue, containsKey, get, put,remove, size**
-**–通过HashMapTest.java 了解其基本用法**
+**• HashMap**  
+**–K-V对，K和V都允许为null**  
+**–不同步，多线程不安全**  
+**• Map m = Collections.synchronizedMap(new HashMap(...));**  
+**–无序的**  
+**–主要方法：clear, containsValue, containsKey, get, put,remove, size**  
+**–通过HashMapTest.java 了解其基本用法**  
 
 ```java
 package com.wck;
@@ -249,19 +249,19 @@ size: 0
 
 
 
-**• LinkedHashMap -支持 null 的插入** 
-**–基于双向链表的维持插入顺序的HashMap**
-**• <u>TreeMap-支持 value可以是null的，而key为null 编译没错，运行报空指针异常</u>  **
-**–基于红黑树的Map，可以根据key的自然排序或者compareTo方法**
-**进行排序输出**
-**• 查看LinkedHashMapTest.java以了解其用法**
-**• 查看TreeMapTest.java以了解其用法**
+**• LinkedHashMap -支持 null 的插入**   
+**–基于双向链表的维持插入顺序的HashMap**  
+**• <u>TreeMap-支持 value可以是null的，而key为null 编译没错，运行报空指针异常</u>  **  
+**–基于红黑树的Map，可以根据key的自然排序或者compareTo方法**  
+**进行排序输出**  
+**• 查看LinkedHashMapTest.java以了解其用法**  
+**• 查看TreeMapTest.java以了解其用法**  
 
 
 
-**<u>注意：HashMap遍历是无序的。LinkedHashMap遍历的顺序和它插入的顺序是保持一致的。</u>**
+**<u>注意：HashMap遍历是无序的。LinkedHashMap遍历的顺序和它插入的顺序是保持一致的。</u>**  
 
-**<u>TreeMap遍历的顺序是按照大小或者compareTo方法规定的</u>**
+**<u>TreeMap遍历的顺序是按照大小或者compareTo方法规定的</u>**  
 
 ```java
 package com.wck;
@@ -496,14 +496,14 @@ Key:30000, Value:ddd
 
 
 
-**• Properties**
-**–继承于Hashtable**
-**–可以将K-V对保存在文件中**
-**–适用于数据量少的配置文件**
-**–继承自Hashtable的方法：clear, contains/containsValue, containsKey,get, put,remove, size**
-**–从文件加载的load方法， 写入到文件中的store方法**
-**–获取属性 getProperty ，设置属性setProperty**
-**–查看PropertiesTest了解其用法**
+**• Properties**  
+**–继承于Hashtable**  
+**–可以将K-V对保存在文件中**  
+**–适用于数据量少的配置文件**  
+**–继承自Hashtable的方法：clear, contains/containsValue, containsKey,get, put,remove, size**  
+**–从文件加载的load方法， 写入到文件中的store方法**  
+**–获取属性 getProperty ，设置属性setProperty**  
+**–查看PropertiesTest了解其用法**  
 
 ```java
 package com.wck;
@@ -589,7 +589,7 @@ public class PropertiesTest {
 
 
 
-**• 总结**
-**–HashMap是最常用的映射结构**
-**–如需要排序，考虑LinkedHashMap和TreeMap**
-**–如需要将K-V存储为文件，可采用Properties类**
+**• 总结**  
+**–HashMap是最常用的映射结构**  
+**–如需要排序，考虑LinkedHashMap和TreeMap**  
+**–如需要将K-V存储为文件，可采用Properties类**  
