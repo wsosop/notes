@@ -1,25 +1,25 @@
 ## 文件系统及Java文件基本操作
 
-**文件概述**
-**• 文件系统是由OS(操作系统)管理的**
-**• 文件系统和Java进程是平行的，是两套系统**
-**• 文件系统是由文件夹和文件递归组合而成**
-**• 文件目录分隔符**
-**–Linux/Unix 用/隔开**
-**–Windows用\隔开，涉及到转义，在程序中需用/或\\代替**
-**• 文件包括文件里面的内容和文件基本属性**
-**• 文件基本属性：名称、大小、扩展名、修改时间等**
+**文件概述**  
+**• 文件系统是由OS(操作系统)管理的**  
+**• 文件系统和Java进程是平行的，是两套系统**  
+**• 文件系统是由文件夹和文件递归组合而成**  
+**• 文件目录分隔符**  
+**–Linux/Unix 用/隔开**  
+**–Windows用\隔开，涉及到转义，在程序中需用/或\\代替**  
+**• 文件包括文件里面的内容和文件基本属性**  
+**• 文件基本属性：名称、大小、扩展名、修改时间等**  
 
 
 
-**Java 文件类File**
-**• java.io.File是文件和目录的重要类(JDK6及以前是唯一)**
-**–<u>目录也使用File类进行表示</u>**
-**• File类与OS无关，但会受到OS的权限限制**
-**• 常用方法**
-**–createNewFile,delete,exists, getAbsolutePath, getName,getParent,getPath, isDirectory, isFile, length, listFiles, mkdir, mkdirs**
-**• <u>注意：File不涉及到具体的文件内容，只涉及属性</u>**
-**• 查看FileAttributeTest.java了解其用法**
+**Java 文件类File**  
+**• java.io.File是文件和目录的重要类(JDK6及以前是唯一)**  
+**–<u>目录也使用File类进行表示</u>**  
+**• File类与OS无关，但会受到OS的权限限制**  
+**• 常用方法**  
+**–createNewFile,delete,exists, getAbsolutePath, getName,getParent,getPath, isDirectory, isFile,   length, listFiles, mkdir, mkdirs**  
+**• <u>注意：File不涉及到具体的文件内容，只涉及属性</u>**  
+**• 查看FileAttributeTest.java了解其用法**  
 
 
 
@@ -76,15 +76,15 @@ public class FileAttributeTest{
 
 
 
-**• Java 7提出的NIO包，提出新的文件系统类**
-**–Path, Files, DirectoryStream, FileVisitor,FileSystem**
-**–是java.io.File的有益补充**
-**• 文件复制和移动**
-**• 文件相对路径**
-**• 递归遍历目录**
-**• 递归删除目录**
-**• ……**
-**–查看相关例子**
+**• Java 7提出的NIO包，提出新的文件系统类**  
+**–Path, Files, DirectoryStream, FileVisitor,FileSystem**  
+**–是java.io.File的有益补充**  
+**• 文件复制和移动**  
+**• 文件相对路径**  
+**• 递归遍历目录**  
+**• 递归删除目录**  
+**• ……**  
+**–查看相关例子**  
 
 ```java
 package com.wck;
@@ -290,8 +290,8 @@ public class SearchJPGFiles {
 }
 ```
 
-**总结**
-**• 文件系统和Java是并列的两套系统**
-**• File类是文件基本属性操作的主要类**
-**• Java 7提出的NIO包在某些功能上有重要的补充作用**
+**总结**  
+**• 文件系统和Java是并列的两套系统**  
+**• File类是文件基本属性操作的主要类**  
+**• Java 7提出的NIO包在某些功能上有重要的补充作用**  
 
