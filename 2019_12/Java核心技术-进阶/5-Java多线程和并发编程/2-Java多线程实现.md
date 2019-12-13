@@ -4,7 +4,7 @@
 **• java.lang.Thread（一）**  
 **– 线程继承Thread类，实现run方法**  
 **• java.lang.Runnable接口（二）**  
-**– 线程实现Runnable接口，实现run方法 ** 
+**– 线程实现Runnable接口，实现run方法** 
 
 
 
@@ -33,6 +33,10 @@
 ***1：调用run方法，来启动run方法，将会是串行运行。***  
 
 ***2：调用start方法，来启动run方法，将会是并行运行（多线程运行）***  
+
+
+
+创建多线程的两种方式
 
 ```java
 package com.wck.thread;
