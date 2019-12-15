@@ -64,3 +64,19 @@
 
 具体代码见目录下的文件压缩包Netty.zip。
 
+
+
+**Netty(6)**  
+**• Mina**  
+**– Apache Mina, http://mina.apache.org/ **  
+**– NIO 框架库**  
+**– 事件驱动的异步网络通讯**  
+**– 和Netty的区别**  
+**https://stackoverflow.com/questions/1637752/netty-vs-apache-mina**  
+
+
+
+**总结**  
+**• 了解Netty的基本原理**  
+**• 掌握Netty的基本编程**  
+
