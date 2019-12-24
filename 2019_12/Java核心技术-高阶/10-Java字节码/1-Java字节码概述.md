@@ -6,13 +6,13 @@
 **–编译阶段：采用javac.exe对.java文件编译，产生.class文件**  
 **–运行阶段：采用java.exe加载.class文件运行**  
 
-![java开发过程](.\java开发过程.png)
+![java开发过程](./java开发过程.png)
 
 
 
 **HelloWorld.class文件**
 
-![简单的class文件](.\简单的class文件.png)
+![简单的class文件](./简单的class文件.png)
 
 
 
@@ -30,7 +30,7 @@
 
 **class文件内容**
 
-![class文件内容](.\class文件内容.png)
+![class文件内容](./class文件内容.png)
 
 
 
