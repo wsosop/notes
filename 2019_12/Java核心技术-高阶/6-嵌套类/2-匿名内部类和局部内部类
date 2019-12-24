@@ -1,0 +1,231 @@
+## 匿名内部类和局部内部类
+
+**嵌套类**  
+**• 嵌套类：Nested classes**  
+**–静态嵌套类：Static nested classes,即类前面有class修饰符**  
+**–非静态嵌套类：Non-static nested classes, 又名内部类，Inner classes**  
+**• 普通内部类(有翻译为:成员内部类)**  
+***• 局部内部类(Local classes)***  
+***• 匿名内部类(Anonymous classes)***  
+**– https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html**  
+
+
+
+**嵌套类学习重点**  
+**• 嵌套类的语法**  
+**• 嵌套类和其他类的关系**  
+**–嵌套类访问外部包围类**  
+**–外部包围类访问嵌套类**  
+**–第三方类访问嵌套类**  
+
+
+
+**匿名内部类(1)**  
+**• 匿名内部类: Anonymous classes**  
+**–<u>没有类名</u>的内部类，必须继承<u>一个</u>父类/实现<u>一个</u>父接口**  
+**–在实例化以后，迅速转型为<u>父类/父接口</u>**  
+**–这种类型的对象，只能new一个对象，之后以对象名字操作**  
+**–可在普通语句和成员变量赋值时使用内部类**  
+
+```java
+	Runnable r = new Runnable() {
+			public void run(){
+				System.out.println("hello ");
+			}
+		};
+new Thread(r).start();
+```
+
+ 
+
+**匿名内部类(2)**  
+**• 匿名内部类**  
+**–<u>没有正式类名</u>的内部类**  
+**• 编译器产生内部名字：类名+$+数字编号**  
+**–没有类名，<u>没有构造函数</u>，能用父类/父接口的构造函数(可带参数)**  
+**–可以<u>继承、改写、补充</u>父类/父接口的方法 **  
+**–内部不可以<u>新定义</u>静态成员(变量+方法)，常量除外**  
+**• final static int a = 5;**  
+**–可以访问外部包围类的成员变量和方法(包括private)**  
+**–<u>如果定义在静态方法中，也只能访问外部包围类的静态成员</u>**  
+**–没有类名，<u>外部包围类和其他类也无法访问到匿名内部类</u>**  
+
+```java
+└─src
+    ├─anonymousinner
+    │      Outer1.java
+    │      Outer1Test.java
+    │      
+    └─localinner
+            Outer2.java
+            Outer2Test.java
+```
+
+```java
+package anonymousinner;
+
+public class Outer1 {
+
+	private String name = "abc";//第5行
+	
+	
+	//匿名内部类
+//	public static void f1() 
+	public void f1() 
+	{
+		final String name = "def"; //第12行
+		
+		Runnable r = new Runnable() {
+			//匿名内部类不能定义静态变量，除非是常量
+			public final static int a = 5;
+//			public static int b = 3;
+			String name = "ghi";//第18行
+			public void run(){
+				System.out.println("hello " + name); //第20行
+				//System.out.println("hello"+this.name);//第21行
+                	//System.out.println("hello"+Outer1.this.name);//第22行
+				//屏蔽外部方法的临时变量
+				//https://docs.oracle.com/javase/tutorial/java/javaOO/nested.html#shadowing
+			}
+			//静态方法不能在匿名内部类定义
+//			public static void f2() {				
+//			}
+		};
+		new Thread(r).start();
+		System.out.println(r.getClass().getName());
+		
+		Runnable r2 = new Runnable() {
+			public void run(){
+				System.out.println("hello " + Outer1.this.name);
+			}
+		};
+		new Thread(r2).start();
+		System.out.println(r2.getClass().getName());	
+		
+	}
+}
+
+
+/*
+ *第20行写name,访问的是第18行的name,
+ *第21行写this.name,访问的是第18行的name
+ *第22行写Outer1.this.name,访问的是第5行的name
+ *由于变量遮蔽，20行无法访问第12行的name,只有注释掉18行，12行加上final变成常量，那么20行写name，就访问到第18行的name
+ */
+
+```
+
+```java
+package anonymousinner;
+
+public class Outer1Test {
+
+	public static void main(String[] args) {
+		new Outer1().f1();		
+	}
+}
+```
+
+
+
+**局部内部类(1)**  
+**• 局部内部类：Local classes**  
+**–定义在代码块中的非静态的类，如方法，for循环，if语句等**  
+**–定义后，即可创建对象使用**  
+**–只能活在这个代码块中，代码块结束后，外界无法使用该类**  
+
+```java
+	// 局部内部类
+	public void f1() {
+		String name = "def";
+		class Inner2 {
+			public Inner2() {}
+			public void f2() {
+				System.out.println(name);
+				System.out.println(Outer2.this.name);
+			}
+		}
+		Inner2 obj1 = new Inner2();
+		obj1.f2();
+		System.out.println(obj1.getClass().getName());
+	}
+```
+
+
+
+**局部内部类(2)**  
+**• 局部内部类：Local classes**  
+**–编译后名称：外部类名+$+序号+内部类名**  
+**–可以继承其他类，或者实现其他接口**  
+**–非静态的类，不能包含静态成员(变量和方法)，除了常量**  
+**–可以访问外部包围类的成员**  
+**–如果定义在静态方法中，只能访问包围类的静态成员**  
+**–局部内部类不能是一个接口，即接口不能定义在代码块中**  
+
+```java
+package localinner;
+
+public class Outer2 {
+	private String name = "abc";
+
+	// 局部内部类
+	public void f1() {
+		String name = "def";
+
+		class Inner2 {
+			final static int a = 1;
+			
+			String name = "ghi";
+			
+			public Inner2() {}
+			
+			public void f2() {
+				System.out.println(name);
+				System.out.println(Outer2.this.name);
+			}
+		}
+
+		Inner2 obj1 = new Inner2();
+		obj1.f2();
+		System.out.println(obj1.getClass().getName());
+	}
+
+	// 局部内部类
+	public static void f2() {
+		final String name = "def";
+
+		class Inner2 {
+			public void f2() {
+				System.out.println(name);
+				//System.out.println(Outer2.this.name);//这句会报错，static方法
+			}
+		}
+
+		Inner2 obj1 = new Inner2();
+		obj1.f2();
+		System.out.println(obj1.getClass().getName());
+	}
+}
+
+```
+
+```java
+package localinner;
+
+public class Outer2Test {
+
+	public static void main(String[] args) {
+		new Outer2().f1();
+//		new Outer2().f2();
+	}
+
+}
+```
+
+
+
+**总结**
+**• 了解匿名内部类和局部内部类**  
+**–两者几乎相似**  
+**–局部内部类可以重用，匿名内部类不能重用**  
+**–匿名内部类更简洁**  
