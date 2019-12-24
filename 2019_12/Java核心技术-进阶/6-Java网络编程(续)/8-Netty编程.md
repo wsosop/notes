@@ -51,8 +51,8 @@
 **– ByteBuf** 
 **• 强大的字节容器，提供丰富API进行操作**
 
-<img src=".\责任链示意图.png" alt="责任链示意图"  />
-<img src=".\netty工作模式-责任链.png" alt="netty工作模式-责任链"  />
+<img src="./责任链示意图.png" alt="责任链示意图"  />
+<img src="./netty工作模式-责任链.png" alt="netty工作模式-责任链"  />
 
 
 

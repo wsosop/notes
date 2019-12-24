@@ -9,7 +9,7 @@
 
 
 
-<img src=".\java调用C示意图.png" alt="java调用C示意图" style="zoom:67%;" />
+<img src="./java调用C示意图.png" alt="java调用C示意图" style="zoom:67%;" />
 
 
 

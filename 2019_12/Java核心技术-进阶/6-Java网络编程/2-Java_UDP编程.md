@@ -35,7 +35,7 @@
 
 这里在本目录下有一张图 DatagramSocket-DatagramPacket.png
 
-![DatagramSocket-DatagramPacket](.\DatagramSocket-DatagramPacket.png)
+![DatagramSocket-DatagramPacket](./DatagramSocket-DatagramPacket.png)
 
 ```java
 

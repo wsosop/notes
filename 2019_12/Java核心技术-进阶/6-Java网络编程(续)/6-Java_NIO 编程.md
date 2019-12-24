@@ -7,7 +7,7 @@
 
 **BIO(2)**
 
-<img src=".\IO阻塞图.png" alt="IO阻塞图" style="zoom: 50%;" />
+<img src="./IO阻塞图.png" alt="IO阻塞图" style="zoom: 50%;" />
 
 
 
@@ -18,7 +18,7 @@
 **• 一个线程可以管理多个连接**  
 **• 减少线程多的压力**  
 
-<img src=".\非阻塞IO.png" alt="非阻塞IO" style="zoom: 50%;" />
+<img src="./非阻塞IO.png" alt="非阻塞IO" style="zoom: 50%;" />
 
 
 
@@ -36,7 +36,7 @@
 **NIO(3)**  
 **• NIO 服务端-客户端通讯示意图**  
 
-<img src=".\NIO服务端-客户端通讯示意图.png" alt="NIO服务端-客户端通讯示意图" style="zoom: 67%;" />
+<img src="./NIO服务端-客户端通讯示意图.png" alt="NIO服务端-客户端通讯示意图" style="zoom: 67%;" />
 
 
 

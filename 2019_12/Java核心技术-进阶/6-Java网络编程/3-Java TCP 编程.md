@@ -22,7 +22,7 @@
 **– ③服务器：ServerSocket接收到连接，创建一个Socket和客户的Socket建立专线连接，后续服务器和客户机的对话(这一对Socket)会在一个单独的线程（服务器端）上运行**  
 **– ④服务器的ServerSocket继续等待连接，返回①**  
 
-<img src=".\ServerSockt-Client.png" alt="ServerSockt-Client" style="zoom:67%;" />
+<img src="./ServerSockt-Client.png" alt="ServerSockt-Client" style="zoom:67%;" />
 
 **TCP(3)**  
 **• ServerSocket: 服务器码头**  

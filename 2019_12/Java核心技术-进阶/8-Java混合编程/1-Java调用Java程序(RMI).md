@@ -37,7 +37,7 @@
 **• RMI：Remote Method Invocation 远程方法调用**  
 **– 两个位于不同JVM虚拟机的Java程序互相请求访问**  
 
-<img src=".\RMI示意图.png" alt="RMI示意图" style="zoom:67%;" />
+<img src="./RMI示意图.png" alt="RMI示意图" style="zoom:67%;" />
 
 
 

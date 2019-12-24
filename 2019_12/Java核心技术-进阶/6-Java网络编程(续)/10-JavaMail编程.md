@@ -2,7 +2,7 @@
 
 Java Mail 编程
 
-<img src=".\javaMail.png" alt="javaMail.png" style="zoom: 67%;" />
+<img src="./javaMail.png" alt="javaMail.png" style="zoom: 67%;" />
 
 
 
