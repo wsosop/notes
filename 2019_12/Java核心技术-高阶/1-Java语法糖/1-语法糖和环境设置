@@ -1,0 +1,25 @@
+## 语法糖和环境设置
+
+**语法糖(1)**  
+**• 语法糖：Syntactic sugar / Syntax sugar**  
+**–1964年英国计算机科学家Peter J.Landin发明的。**  
+**• 定义了程序闭包(closure)概念**  
+**• 第一个意识到lambda演算可用于程序语言建模**  
+**• Tony Hoare的ALGOL语言老师**  
+**• 1966年经典论文“The next 700 programming languages”**  
+**–In computer science, syntactic sugar is syntax within a programming language that is designed to make things easier to read or to express。(Wikipedia)**   
+
+
+
+**语法糖(2)**  
+**• 语法糖：Syntactic sugar / Syntax sugar**  
+**–语法糖使得程序员更容易编写程序，更清晰准确表达业务逻辑。**  
+**–语法糖不仅仅是语法的转换，也包括一些小的改进。**  
+**–本章将列出JDK从5~12版本之间重要的语法糖。**  
+**• JDK 2(1.1~1.4) 是普及版**  
+**• JDK 5/6/7/8/11是长期稳定版**  
+**• JDK 9/10/12是短期版本**  
+
+
+
+编译环境的设置，不做记录了
