@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wck.mybatis.dao.EmployeeMapperPlus">
+	
+	<!-- 使用resultMap 封装 -->
+	<resultMap type="com.wck.mybatis.bean.Employee" id="myEmp">
+	
+		<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+	</resultMap>
+	
+	<!--
+	  	Employee getEmployee(Integer id);
+	-->
+	<select id="getEmployee" resultMap="myEmp">
+		select * from tbl_employee where id = #{id}
+	</select>
+	
+	<!-- 
+		使用连表查询	
+		Employee getCaseEmployee(Integer id);
+	 -->
+	 
+	 <resultMap type="com.wck.mybatis.bean.Employee" id="mySimpleEmp">
+	 	<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+		<result column="id" property="dept.id"/>
+		<result column="dept_name" property="dept.departmentName"/>
+	 </resultMap>
+	 
+	 <resultMap type="com.wck.mybatis.bean.Employee" id="diffEmp">
+	 	<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+		<association property="dept" javaType="com.wck.mybatis.bean.Department">
+			<id column="id" property="id"/>
+		<result column="dept_name" property="departmentName"/>
+		</association>
+	 </resultMap>
+	 
+	 <select id="getCaseEmployee" resultMap="diffEmp">
+	 	SELECT e.id id,e.last_name last_name,e.gender gender,e.d_id d_id,
+		d.id did,d.dept_name dept_name FROM tbl_employee e,tbl_dept d
+		WHERE e.d_id=d.id AND e.id=#{id}
+	 </select>
+	 
+	 <!-- 
+	 	通过级联分步查询
+	 	Employee getCaseEmployeeByStep(Integer id);
+	  -->
+	   <resultMap type="com.wck.mybatis.bean.Employee" id="caseEmpStep">
+	 	<id column="id" property="id"/>
+		<result column="last_name" property="lastName"/>
+		<result column="email" property="email"/>
+		<result column="gender" property="gender"/>
+		<association property="dept" select="com.wck.mybatis.dao.DepartmentMapper.getDepartmentById" column="d_id"></association>
+	 </resultMap>
+	  	<select id="getCaseEmployeeByStep" resultMap="caseEmpStep">
+		select * from tbl_employee where id = #{id}
+	</select>
+	
+	<!-- ==================以上是场景一,使用association关联一个对象,可以理解为单向关联.association：是用来定义一个对象的====================== -->
+	
+	
+	<!-- ==================场景二：
+		查询部门的时候，把部门所对应的所有员工也查出来 ->这个注释在DepartmentMapper.xml文件中
+	-->
+	
+	
+	
+	<!--
+	 	通过部门的id，来查询所有员工
+		List<Employee> getEmployeesList(Integer deptId); 
+	-->
+	<select id="getEmployeesList" resultMap="myEmp">
+		select * from tbl_employee where d_id = #{deptId}
+	</select>
+	
+	
+	<!-- =======================鉴别器============================ -->
+	<!-- <discriminator javaType=""></discriminator>
+		鉴别器：mybatis可以使用discriminator判断某列的值，然后根据某列的值改变封装行为
+		封装Employee：
+			如果查出的是女生：就把部门信息查询出来，否则不查询；
+			如果是男生，把last_name这一列的值赋值给email;
+	 -->
+	 <resultMap type="com.wck.mybatis.bean.Employee" id="MyEmpDis">
+	 	<id column="id" property="id"/>
+	 	<result column="last_name" property="lastName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="gender" property="gender"/>
+	 	<!--
+	 		column：指定判定的列名
+	 		javaType：列值对应的java类型  -->
+	 	<discriminator javaType="string" column="gender">
+	 		<!--女生  resultType:指定封装的结果类型；不能缺少。/resultMap-->
+	 		<case value="0" resultType="com.wck.mybatis.bean.Employee">
+	 			<association property="dept" 
+			 		select="com.atguigu.mybatis.dao.DepartmentMapper.getDeptById"
+			 		column="d_id">
+		 		</association>
+	 		</case>
+	 		<!--男生 ;如果是男生，把last_name这一列的值赋值给email; -->
+	 		<case value="1" resultType="com.wck.mybatis.bean.Employee">
+		 		<id column="id" property="id"/>
+			 	<result column="last_name" property="lastName"/>
+			 	<result column="last_name" property="email"/>
+			 	<result column="gender" property="gender"/>
+	 		</case>
+	 	</discriminator>
+	 </resultMap>
+	
+	
+</mapper>

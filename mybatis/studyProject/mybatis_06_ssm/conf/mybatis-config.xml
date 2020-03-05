@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<!-- 二、
+		settings:这是 MyBatis 中极为重要的调整设置，它们会改变 MyBatis 的运行时行为。
+		setting :
+			name:设置项的名称
+			value:设置项的取值
+	 -->
+	<settings>
+		<!-- 是否开启自动驼峰命名规则（camel case）映射，即从经典数据库列名 A_COLUMN 到经典 Java 属性名 aColumn 的类似映射。默认为false -->
+   			<setting name="mapUnderscoreToCamelCase" value="true"/>
+			<setting name="jdbcTypeForNull" value="NULL"/>
+			<!-- 开启级联分步懒加载 -->
+			<setting name="lazyLoadingEnabled" value="true"/>
+			<setting name="aggressiveLazyLoading" value="false"/>
+			<setting name="cacheEnabled" value="true"/>
+			<setting name="logPrefix" value="===============>>>>>>>>"/>
+	</settings>
+  
+  <!-- 五：
+  	多数据库厂商标识（databaseIdProvider）
+  	type="DB_VENDOR" :VendorDatabaseIdProvider这个类，
+  		作用就是得到数据库厂商的标识(驱动)，mysql就能根据数据库不同的厂商标识，来执行不同的sql
+  	具体使用这个，在mapper文件中 使用 databaseId="mysql",指定下就可以使用了
+  	-->
+  <databaseIdProvider type="DB_VENDOR" >
+  	  <!-- property 为不同的厂商标识起别名 -->
+	  <property name="SQL Server" value="sqlserver"/>
+	  <property name="DB2" value="db2"/>
+	  <property name="Oracle" value="oracle" />
+	  <property name="MYSQL" value="mysql" />
+  </databaseIdProvider>
+</configuration>
