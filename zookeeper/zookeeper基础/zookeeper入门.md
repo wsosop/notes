@@ -30,11 +30,11 @@ Zookeeper是一个开源的分布式的，为分布式应用提供协调服务�
 
 ## **1.5** **下载地址**
 
-1．官网首页：
+**1．官网首页：**
 
 https://zookeeper.apache.org/
 
-2．下载截图，如图5-5，5-6，5-7所示
+**2．下载截图，如图5-5，5-6，5-7所示**
 
 ![zookeeper下载1](./images/zookeeper下载1.png) 
 
@@ -52,7 +52,7 @@ https://zookeeper.apache.org/
 
 ## **2.1** **本地模式安装部署**
 
-1．安装前准备
+**1．安装前准备**
 
 （1）安装Jdk
 
@@ -62,7 +62,7 @@ https://zookeeper.apache.org/
 
 `[root]$ tar -zxvf zookeeper-3.4.10.tar.gz -C /opt/module/`
 
-2．配置修改
+**2．配置修改**
 
    （1）将/opt/module/zookeeper-3.4.10/conf这个路径下的zoo_sample.cfg修改为zoo.cfg；
 
@@ -80,7 +80,7 @@ dataDir=/opt/module/zookeeper-3.4.10/zkData
 
 `[root zookeeper-3.4.10]$ mkdir zkData`
 
-3．操作Zookeeper
+**3．操作Zookeeper**
 
 （1）启动Zookeeper
 
@@ -216,11 +216,11 @@ Zookeeper使用的基本时间，服务器之间或客户端与服务器之间�
 
 ## **4.1** **分布式安装部署**
 
-1．集群规划
+**1．集群规划**
 
 在hadoop102、hadoop103和hadoop104三个节点上部署Zookeeper。
 
-2．解压安装
+**2．解压安装**
 
 （1）解压Zookeeper安装包到/opt/module/目录下
 
@@ -230,7 +230,7 @@ Zookeeper使用的基本时间，服务器之间或客户端与服务器之间�
 
 `[root module]$ xsync zookeeper-3.4.10/`
 
-3．配置服务器编号
+**3．配置服务器编号**
 
 （1）在/opt/module/zookeeper-3.4.10/这个目录下创建zkData
 
@@ -256,7 +256,7 @@ Zookeeper使用的基本时间，服务器之间或客户端与服务器之间�
 
 并分别在hadoop102、hadoop103上修改myid文件中内容为3、4
 
-4．配置zoo.cfg文件
+**4．配置zoo.cfg文件**
 
 （1）重命名/opt/module/zookeeper-3.4.10/conf这个目录下的zoo_sample.cfg为zoo.cfg
 
@@ -298,7 +298,7 @@ server.A=B:C:D。
 
 **D**是万一集群中的Leader服务器挂了，需要一个端口来重新进行选举，选出一个新的Leader，而这个端口就是用来执行选举时服务器相互通信的端口。
 
-4．集群操作
+**4．集群操作**
 
 （1）分别启动Zookeeper
 
