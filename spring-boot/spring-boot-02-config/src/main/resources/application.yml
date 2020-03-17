@@ -1,0 +1,35 @@
+server:
+  port: 8081
+spring:
+  profiles:
+    active: prod
+---
+
+
+server:
+  port: 8082
+spring:
+  profiles: dev
+---
+server:
+  port: 8083
+spring:
+  profiles: prod
+
+---
+
+
+
+#yml基本配置编写语法
+#person:
+#    lastName: wck
+#    age: 18
+#    boss: false
+#    birth: 1999/08/9
+#    maps: {k1: v1,k2: v2}
+#    lists:
+#      - zhangsan
+#      - lisi
+#    dog:
+#      name : dog1
+#      age: 2
