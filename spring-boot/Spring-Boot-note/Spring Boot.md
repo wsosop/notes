@@ -1,4 +1,4 @@
-# **一、**Spring Boot 入门
+# 一、Spring Boot 入门
 
 ## 1、Spring Boot 简介
 
@@ -25,8 +25,6 @@
 
 
 ## 3、环境准备
-
-http://www.gulixueyuan.com/ 谷粒学院
 
 环境约束
 
