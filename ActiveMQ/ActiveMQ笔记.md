@@ -10,7 +10,7 @@
 
 ### 	1.2）、MQ产品种类
 
-​		kafka:
+​		kafka: 
 
 ​		RabbitMQ:
 
