@@ -1,0 +1,13 @@
+server:
+  port: 6666
+spring:
+  activemq: #配置activeMQ
+    broker-url: tcp://192.168.1.102:61616
+    user: admin
+    password: admin
+  jms:
+    pub-sub-domain: true # 这个 false ：开启queue true ： 开启 topic
+
+mytopic: spring-boot-mq-topic
+
+

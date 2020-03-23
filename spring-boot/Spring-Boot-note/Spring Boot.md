@@ -3372,13 +3372,14 @@ systemctl status docker.service
 
 ### 1）、镜像操作
 
-| 操作     | 命令                                            | 说明                                                     |
-| -------- | ----------------------------------------------- | -------------------------------------------------------- |
-| 检索     | docker  search 关键字  eg：docker  search redis | 我们经常去docker  hub上检索镜像的详细信息，如镜像的TAG。 |
-| 拉取     | docker pull 镜像名:tag                          | :tag是可选的，tag表示标签，多为软件的版本，默认是latest  |
-| 列表     | docker images                                   | 查看所有本地镜像                                         |
-| 删除     | docker rmi image-id                             | 删除指定的本地镜像                                       |
-| 日志查看 | docker logs image-id                            | 查看指定镜像id 的日志                                    |
+| 操作         | 命令                                            | 说明                                                     |
+| ------------ | ----------------------------------------------- | -------------------------------------------------------- |
+| 检索         | docker  search 关键字  eg：docker  search redis | 我们经常去docker  hub上检索镜像的详细信息，如镜像的TAG。 |
+| 拉取         | docker pull 镜像名:tag                          | :tag是可选的，tag表示标签，多为软件的版本，默认是latest  |
+| 列表         | docker images                                   | 查看所有本地镜像                                         |
+| 删除         | docker rmi image-id                             | 删除指定的本地镜像                                       |
+| 日志查看     | docker logs image-id                            | 查看指定镜像id 的日志                                    |
+| 启动exit镜像 | docker start image-id                           | 启动已经exit的镜像                                       |
 
 https://hub.docker.com/
 
