@@ -6,13 +6,11 @@
 
 ## 1.2构造方法
 
-- - 
+- `public File(String pathname)` ：通过将给定的**路径名字符串**转换为抽象路径名来创建新的 File实例。
 
-- - 
+- `public File(String parent, String child)` ：从**父路径名字符串和子路径名字符串**创建新的 File实例。
 
-- - 
-
-- - 
+- `public File(File parent, String child)` ：从**父抽象路径名和子路径名字符串**创建新的 File实例。
 
 - 构造函数，代码如下
 
