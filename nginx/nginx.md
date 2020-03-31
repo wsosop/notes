@@ -67,7 +67,7 @@ Nginx 可以作为静态页面的 web 服务器，同时还支持 CGI 协议的�
 
 ## 2.2）准备的软件及依赖
 
-![6](D:\githubRepositories\notes\nginx\images\6.png)
+![6](images/6.png)
 
 ## 2.3）安装步骤
 
