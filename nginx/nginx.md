@@ -112,7 +112,7 @@ yum -y install gcc
 
 ​	②安装GCC完成
 
-![13](D:\githubRepositories\notes\nginx\images\13.png)
+![13](images/13.png)
 
 ​	③重新执行4步骤
 
@@ -278,7 +278,7 @@ firewall-cmd –reload
 
 ### 3.3）关闭nginx `./nginx -s stop`
 
-![30](D:\githubRepositories\notes\nginx\images\30.png)
+![30](images/30.png)
 
 ```shell
 [root@localhost sbin]# ./nginx -s stop
