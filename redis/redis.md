@@ -1128,3 +1128,1131 @@ OK
 - **如果值全移除，对应的键也就消失了**。
 - **链表的操作无论是头和尾效率都极高**，但假如是对**中间元素进行操作，效率就很惨淡了**。
 
+## 3.6）Redis集合(Set)-单值多value【不重复，无序】
+
+### 3.6.1）常用命令表
+
+![56](images/56.png)
+
+### 3.6.2）常用的部分例子
+
+#### ①`sadd/smembers/sismember`
+
+![57](images/57.png)
+
+
+
+```shell
+127.0.0.1:6379> keys *
+(empty list or set)
+#添加set集合key为set01，重复的值将不会set 进去
+127.0.0.1:6379> sadd set01 1 1 2 2 3 3 
+(integer) 3
+#查看key为set01，set中的值
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+#判断set中key为set01 中的值是否有 2
+127.0.0.1:6379> SISMEMBER set01 2
+#返回 1 代表有 0 则没有
+(integer) 1
+127.0.0.1:6379> SISMEMBER set01 1
+(integer) 1
+127.0.0.1:6379> 
+```
+
+#### ②`scard`，获取集合里面的元素个数
+
+![58](images/58.png)
+
+
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+#获取 key为set01的值长度
+127.0.0.1:6379> SCARD set01
+(integer) 3
+127.0.0.1:6379> 
+```
+
+#### ③ `srem key value` 删除集合中元素
+
+![59](images/59.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+#删除 key为 set01的中的 1 值
+127.0.0.1:6379> SREM set01 1
+(integer) 1
+127.0.0.1:6379> SMEMBERS set01
+1) "2"
+2) "3"
+127.0.0.1:6379> 
+```
+
+#### ④ `srandmember key` 某个整数(随机出几个数)
+
+![60](images/60.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "5"
+#随机抽取 key 为set01 的一个值
+127.0.0.1:6379> SRANDMEMBER set01
+"4"
+127.0.0.1:6379> SRANDMEMBER set01
+"2"
+127.0.0.1:6379>
+```
+
+#### ⑤ spop key 随机出栈
+
+![61](images/61.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "5"
+#随机弹出 key为 set01,一个值 出栈
+127.0.0.1:6379> SPOP set01
+"5"
+127.0.0.1:6379> 
+127.0.0.1:6379> SPOP set01
+"3"
+127.0.0.1:6379>
+```
+
+#### ⑥ `smove key1 key2 在key1里某个值`      作用是将key1里的某个值赋给key2
+
+![62](images/62.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+2) "set02"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "4"
+127.0.0.1:6379> SMEMBERS set02
+1) "d"
+2) "c"
+3) "a"
+4) "b"
+#把key 为set01的里面的值 1 移动到 set02 中去 
+127.0.0.1:6379> SMOVE set01 set02 1
+(integer) 1
+127.0.0.1:6379> SMEMBERS set01
+1) "2"
+2) "4"
+127.0.0.1:6379> SMEMBERS set02
+1) "d"
+2) "c"
+3) "a"
+4) "b"
+5) "1"
+127.0.0.1:6379> 
+```
+
+#### ⑦数学集合类
+
+##### 差集：`sdiff`
+
+![63](images/63.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+2) "set02"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "5"
+127.0.0.1:6379> SMEMBERS set02
+1) "a"
+2) "3"
+3) "2"
+4) "1"
+5) "b"
+#计算 key为set01、set02之间的差集，是以第一个（set01）为参考的差集
+127.0.0.1:6379> SDIFF set01 set02
+1) "4"
+2) "5"
+```
+
+##### 交集：`sinter`
+
+![64](images/64.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+2) "set02"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "5"
+127.0.0.1:6379> SMEMBERS set02
+1) "3"
+2) "b"
+3) "2"
+4) "a"
+5) "1"
+#计算 key为set01、set02之间的交集
+127.0.0.1:6379> SINTER set01 set02
+1) "1"
+2) "2"
+3) "3"
+127.0.0.1:6379>
+```
+
+##### 并集：`sunion`
+
+![65](images/65.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "set01"
+2) "set02"
+127.0.0.1:6379> SMEMBERS set01
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "5"
+127.0.0.1:6379> SMEMBERS set02
+1) "3"
+2) "b"
+3) "2"
+4) "a"
+5) "1"
+#计算 key为set01、set02之间的并集
+127.0.0.1:6379> SUNION set01 set02
+1) "4"
+2) "3"
+3) "5"
+4) "b"
+5) "a"
+6) "2"
+7) "1"
+127.0.0.1:6379> 
+```
+
+## 3.7）Redis哈希(Hash)【KV模式不变，但V是一个键值对】
+
+### 3.7.1）常用命令表
+
+![66](images/66.png)
+
+### 3.7.2）常用的部分例子
+
+#### ①`hset/hget/hgetall/hmset/hmget/hdel`
+
+- 设置单个值
+
+![67](images/67.png)
+
+```shell
+127.0.0.1:6379> keys *
+(empty list or set)
+#设置hash中的单个值 注意 key（user） 对应的value也是一个键值对
+127.0.0.1:6379> hset user id 1
+(integer) 1
+#设置hash中的单个值 注意 key（user） 对应的value也是一个键值对 
+127.0.0.1:6379> hset user name wck
+(integer) 1
+#获取hash中的单个值 ，获取user 中的id
+127.0.0.1:6379> hget user id
+"1"
+#获取hash中的单个值 ，获取user 中的name
+127.0.0.1:6379> hget user name
+"wck"
+127.0.0.1:6379>
+```
+
+- 设置多个值
+
+![68](images/68.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "user"
+#获取hash指定key的值
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "1"
+3) "name"
+4) "wck"
+#设置hash,key为goods多个值
+127.0.0.1:6379> HMSET goods id 1 name iphone 
+OK
+#获取hash,key为goods多个值
+127.0.0.1:6379> HMGET goods id name
+1) "1"
+2) "iphone"
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+#删除hash,key为goods name 的值
+127.0.0.1:6379> HDEL goods name
+(integer) 1
+127.0.0.1:6379> HGETALL goods
+1) "id"
+2) "1"
+127.0.0.1:6379> 
+```
+
+#### ②`hlen`获取hash  key值的长度
+
+![69](images/69.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "1"
+3) "name"
+4) "wck"
+#获取 hash 的key 为 user 的长度
+127.0.0.1:6379> HLEN user
+(integer) 2
+127.0.0.1:6379> 
+```
+
+#### ③ `hexists key` 在key里面的某个值的key是否存在
+
+![70](images/70.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "1"
+3) "name"
+4) "wck"
+#在key里面的某个值的key是否存在
+#判断hash是否存在key 为user中的id的key是否存在
+127.0.0.1:6379> HEXISTS user id
+(integer) 1
+#在key里面的某个值的key是否存在
+#判断hash是否存在key 为user中的email的key是否存在
+127.0.0.1:6379> HEXISTS user email
+(integer) 0
+127.0.0.1:6379> 
+```
+
+#### ④`hkeys/hvals` 获取hash 的key 和valus
+
+![71](images/71.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "1"
+3) "name"
+4) "wck"
+#获取hash 中key 为user的里面所有的key 值
+127.0.0.1:6379> HKEYS user
+1) "id"
+2) "name"
+#获取hash 中key 为user的里面所有的value 值
+127.0.0.1:6379> HVALS user
+1) "1"
+2) "wck"
+127.0.0.1:6379>
+```
+
+#### ⑤`hincrby/hincrbyfloat`  按照指定的值增长整数/浮点数（数值）
+
+![72](images/72.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "1"
+3) "name"
+4) "wck"
+5) "score"
+6) "77.5"
+#按照hash指定的key（user）中的key(id)增加 指定的值（2），增加的是整数
+127.0.0.1:6379> HINCRBY user id 2
+(integer) 3
+#按照hash指定的key（user）中的key(score)增加 指定的值（ 0.5），增加的是浮点数
+127.0.0.1:6379> HINCRBYFLOAT user score 0.5
+"78"
+#增加的非数值类型报错
+127.0.0.1:6379> HINCRBY user name 2
+(error) ERR hash value is not an integer
+#增加的非数值类型报错
+127.0.0.1:6379> HINCRBYFLOAT user name 0.5
+(error) ERR hash value is not a valid float
+127.0.0.1:6379> 
+```
+
+#### ⑥`hsetnx` 设置hash的值，如果存在则不设置，不存在则设置
+
+![73](images/73.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "goods"
+2) "user"
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "3"
+3) "name"
+4) "wck"
+5) "score"
+6) "78"
+#插入hash 的key为 user 的key 为id ，因为其已经存在，返回0
+127.0.0.1:6379> HSETNX user id 4
+(integer) 0
+#插入hash 的key为 user 的key 为email ，因为其不存在，返回1
+127.0.0.1:6379> HSETNX user email  admin@qq.com
+(integer) 1
+127.0.0.1:6379> HGETALL user
+1) "id"
+2) "3"
+3) "name"
+4) "wck"
+5) "score"
+6) "78"
+7) "email"
+8) "admin@qq.com"
+127.0.0.1:6379> 
+```
+
+
+
+## 3.8）Redis有序集合Zset(sorted set)
+
+### 3.8.1）多说一句
+
+在set基础上，**加一个score值**。
+
+- **之前set是k1 v1 v2 v3**
+- **现在zset是k1 score1 v1 score2 v2**
+
+### 3.8.2）常用命令表
+
+![74](images/74.png)
+
+### 3.8.3）常用的部分例子
+
+#### ①`zadd/zrange` 添加和查看范围
+
+![75](images/75.png)
+
+```shell
+127.0.0.1:6379> keys *
+(empty list or set)
+#添加zset的值 key 为 zset01 分数 和 值 
+127.0.0.1:6379> ZADD zset01 60 v1 70 v2 80 v3 90 v4 100 v5 
+(integer) 5
+#添加zset的值 key 为 zset01 的取值范围的值
+127.0.0.1:6379> ZRANGE zset01 0 -1
+1) "v1"
+2) "v2"
+3) "v3"
+4) "v4"
+5) "v5"
+127.0.0.1:6379> 
+```
+
+![76](images/76.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "zset01"
+#查看zset 的范围 不含有分数，只有值
+127.0.0.1:6379> ZRANGE zset01 0 -1
+1) "v1"
+2) "v2"
+3) "v3"
+4) "v4"
+5) "v5"
+#查看zset 的范围 含有分数和值
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+ 1) "v1"
+ 2) "60"
+ 3) "v2"
+ 4) "70"
+ 5) "v3"
+ 6) "80"
+ 7) "v4"
+ 8) "90"
+ 9) "v5"
+10) "100"
+127.0.0.1:6379> 
+```
+
+#### ② `zrangebyscore key 开始score 结束score`
+
+#####  withscores
+
+#####  (   不包含
+
+##### Limit 作用是返回限制 ：limit 开始下标步 多少步
+
+这个图是操作本第②点的基础数据：
+
+![77](images/77.png)
+
+###### ⑴`ZRANGEBYSCORE zset01 60 80`  
+
+查找60 至 80的分数之间的值 ，**没有加 括弧（ 是等于包含60 和 80**  注： **[60,80]**
+
+![78](images/78.png)
+
+```shell
+#查找60 至 80的分数之间的值，没有加 括弧（ 是等于包含60 和 80** 注： [60,80]
+127.0.0.1:6379> ZRANGEBYSCORE zset01 60 80
+1) "v1"
+2) "v2"
+3) "v3"
+127.0.0.1:6379> 
+```
+
+###### ⑵`ZRANGEBYSCORE zset01 60 80 withscores`
+
+查找[60,80] 分数的值，并且带有分数
+
+![79](images/79.png)
+
+```shell
+#查找[60,80] 分数的值，并且带有分数
+127.0.0.1:6379> ZRANGEBYSCORE zset01 60 80 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+127.0.0.1:6379> 
+```
+
+###### ⑶`ZRANGEBYSCORE zset01 (60 80 withscores`
+
+查找(60,80]的分数的值，不包含60 包含 80
+
+![80](images/80.png)
+
+```shell
+#查找(60,80]的分数的值，不包含60 包含 80
+127.0.0.1:6379> ZRANGEBYSCORE zset01 (60 80 withscores
+1) "v2"
+2) "70"
+3) "v3"
+4) "80"
+127.0.0.1:6379> 
+```
+
+###### ⑷`ZRANGEBYSCORE zset01 60 (100 withscores limit 0 2`
+
+查找[60,100)分数之间的值，**并且 再一次筛选结果**，筛选条件为： **左闭右开的值[0,2)的值**，即 60 和 70
+
+![81](images/81.png)
+
+```shell
+#查找[60,100)分数之间的值，并且 再一次筛选结果，筛选条件为： 左闭右开的值[0,2)的值，即 60 和 70
+127.0.0.1:6379> ZRANGEBYSCORE zset01 60 (100 withscores limit 0 2
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+127.0.0.1:6379> 
+```
+
+###### ⑸`ZRANGEBYSCORE zset01 -inf (100 withscores`
+
+**查找范围 分数为 小于100的值 （-∞，100）**
+
+![83](images/83.png)
+
+```shell
+#查找范围 分数为 小于100的值 （-∞，100）
+127.0.0.1:6379> ZRANGEBYSCORE zset01 -inf (100 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+7) "v4"
+8) "90"
+```
+
+###### ⑹`ZRANGEBYSCORE zset01 70 +inf  withscores`
+
+**查找范围 分数为 大于等于70的值 [70,∞）**
+
+![84](images/84.png)
+
+```shell
+#查找范围 分数为 大于等于100的值 [70,∞）
+127.0.0.1:6379> ZRANGEBYSCORE zset01 70 +inf  withscores
+1) "v2"
+2) "70"
+3) "v3"
+4) "80"
+5) "v4"
+6) "90"
+7) "v5"
+8) "100"
+```
+
+###### ⑺`ZRANGEBYSCORE zset01 -inf +inf  withscores`
+
+**查找范围 分数为 所有的值 [-∞,∞]**
+
+![85](D:\githubRepositories\notes\redis\images\85.png)
+
+```shell
+#查找范围 分数为 所有的值 [-∞,∞]
+127.0.0.1:6379> ZRANGEBYSCORE zset01 -inf +inf  withscores
+ 1) "v1"
+ 2) "60"
+ 3) "v2"
+ 4) "70"
+ 5) "v3"
+ 6) "80"
+ 7) "v4"
+ 8) "90"
+ 9) "v5"
+10) "100"
+```
+
+#### ③ `zrem key 某score下对应的value值`，作用是删除元素
+
+删除元素，格式是zrem zset的key 项的值，**项的值可以是多个**
+
+![86](images/86.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "zset01"
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+ 1) "v1"
+ 2) "60"
+ 3) "v2"
+ 4) "70"
+ 5) "v3"
+ 6) "80"
+ 7) "v4"
+ 8) "90"
+ 9) "v5"
+10) "100"
+#删除 值是v5 的元素
+127.0.0.1:6379> ZREM zset01 v5
+(integer) 1
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+7) "v4"
+8) "90"
+127.0.0.1:6379>
+```
+
+#### ④ `zcard/zcount key score区间/zrank key values值，作用是获得下标值/zscore key 对应值,获得分数`
+
+下面的这个图示本④的基础数据
+
+![87](images/87.png)
+
+
+
+##### `zcard` ：获取集合中元素个数
+
+![88](images/88.png)
+
+```shell
+#获取集合中元素个数
+127.0.0.1:6379> ZCARD zset01
+(integer) 4
+127.0.0.1:6379> 
+```
+
+##### `zcount` ：获取分数区间内元素个数，zcount key 开始分数区间 结束分数区间
+
+![89](images/89.png)
+
+```shell
+#获取集合中元素个数
+127.0.0.1:6379> ZCOUNT zset01 60 80
+(integer) 3
+127.0.0.1:6379> 
+```
+
+##### `zrank`： 获取value在zset中的下标位置
+
+![90](images/90.png)
+
+```shell
+#获取value在zset中的下标位置
+127.0.0.1:6379> zrank zset01 v1
+(integer) 0
+127.0.0.1:6379> zrank zset01 v2
+(integer) 1
+127.0.0.1:6379>
+```
+
+##### `zscore`：按照值获得对应的分数
+
+![91](images/91.png)
+
+```shell
+#按照值获得对应的分数 要使用值，因为获取的是分数
+127.0.0.1:6379> ZSCORE zset01 100
+(nil)
+127.0.0.1:6379> ZSCORE zset01 60 
+(nil)
+127.0.0.1:6379> ZSCORE zset01 v1
+"60"
+127.0.0.1:6379> ZSCORE zset01 v2
+"70"
+127.0.0.1:6379> 
+```
+
+
+
+#### ④ `zrevrank key values值`，作用是逆序获得下标值
+
+![92](images/92.png)
+
+```shell
+#zrevrank key values值，作用是逆序获得下标值
+127.0.0.1:6379> keys *
+1) "zset01"
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+#正序获取v1的索引号
+127.0.0.1:6379> ZRANK zset01 v1
+(integer) 0
+#逆序获取v1的索引号
+127.0.0.1:6379> ZrevRANK zset01 v1
+(integer) 2
+127.0.0.1:6379> 
+
+```
+
+#### ⑤`zrevrange`：反转所有的下标值序列号
+
+![93](images/93.png)
+
+```shell
+127.0.0.1:6379> keys *
+1) "zset01"
+#正向取值范围
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+#反向取值范围
+127.0.0.1:6379> ZREVRANGE zset01 0 -1 withscores
+1) "v3"
+2) "80"
+3) "v2"
+4) "70"
+5) "v1"
+6) "60"
+127.0.0.1:6379> 
+```
+
+#### ⑥ `zrevrangebyscore  key 结束score 开始score`
+
+![94](images/94.png)
+
+```shell
+#zrevrangebyscore  key 结束score 开始score
+127.0.0.1:6379> keys *
+1) "zset01"
+127.0.0.1:6379> ZRANGE zset01 0 -1 withscores
+1) "v1"
+2) "60"
+3) "v2"
+4) "70"
+5) "v3"
+6) "80"
+127.0.0.1:6379> ZREVRANGEBYSCORE zset01 70 80
+(empty list or set)
+#取反转后的值，结束的值为 80 开始的值 为70
+127.0.0.1:6379> ZREVRANGEBYSCORE zset01 80 70
+1) "v3"
+2) "v2"
+127.0.0.1:6379>
+```
+
+# 四、解析配置文件redis.conf
+
+## 4.1）它在哪
+
+配置文件在安装**解压的目录中**
+
+![95](images\95.png)
+
+## 4.2）Units单位
+
+![96](images/96.png)
+
+-  1  配置大小单位,开头定义了一些基本的度量单位，**只支持bytes，不支持bit**
+-  2  **对大小写不敏感**
+
+## 4.3）INCLUDES包含
+
+![97](images/97.png)
+
+-   和我们的Struts2配置文件类似，可以**通过includes包含**，**redis.conf可以作为总闸**，包含其他
+
+## 4.4）GENERAL通用
+
+### 4.4.1）`Daemonize`
+
+### 4.4.2）`rename-command`
+
+### 4.4.3）`Pidfile`
+
+### 4.4.4）`Port`
+
+### 4.4.5）`Tcp-backlog`
+
+- tcp-backlog
+  - 设置tcp的backlog，backlog其实是一个连接队列，**backlog队列总和=未完成三次握手队列 + 已经完成三次握手队列**。
+  - 在高并发环境下你需要一个高backlog值来避免慢客户端连接问题。注意Linux内核会将这个值减小到/proc/sys/net/core/somaxconn的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值
+    来达到想要的效果
+
+### 4.4.6）`Timeout`
+
+### 4.4.7）`Bind `
+
+### 4.4.8）`Tcp-keepalive`
+
+- **单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60** 
+
+### 4.4.9）`Loglevel`
+
+### 4.4.10）`Logfile`
+
+### 4.4.11）`Syslog-enabled`
+
+- **是否把日志输出到syslog中**
+
+### 4.4.12）`Syslog-ident`
+
+- 指定syslog里的日志标志 	
+
+### 4.4.13）`Syslog-facility`
+
+- 指定syslog设备，值可以是USER或LOCAL0-LOCAL7
+
+### 4.4.14）`Databases`
+
+
+
+## 4.5）SNAPSHOTTING快照
+
+### 4.5.1）`Save`  秒钟 写操作次数
+
+![99](images/99.png)
+
+**RDB是整个内存的压缩过的Snapshot，RDB的数据结构，可以配置复合的快照触发条件，**
+默认
+
+- 是**1分钟**内改了**1万次**，
+- 或**5分钟**内改了**10次**，
+- 或**15分钟**内改了**1次**。
+
+### 4.5.2）禁用
+
+![100](images/100.png)
+
+如果想禁用RDB持久化的策略，只要**不设置任何save指令**，**或者给save传入一个空字符串参数也可以**
+
+### 4.5.3）`Stop-writes-on-bgsave-error`
+
+![101](images/101.png)
+
+如果配置成no，表示你不在乎数据不一致或者有其他的手段发现和控制
+
+### 4.5.4）`rdbcompression`
+
+![102](images/102.png)
+
+**rdbcompression**：对于存储到磁盘中的快照，可以设置是否进行压缩存储。如果是的话，redis会采用
+LZF算法进行压缩。如果你不想消耗CPU来进行压缩的话，可以设置为关闭此功能
+
+### 4.5.5）`rdbchecksum`
+
+![103](images/103.png)
+
+
+
+**rdbchecksum**：在存储快照后，还可以让redis使用CRC64算法来进行数据校验，但是这样做会增加大约
+10%的性能消耗，如果希望获取到最大的性能提升，可以关闭此功能
+
+### 4.5.6）`dbfilename`
+
+备份文件的名称
+
+### 4.5.7）`dir`
+
+备份文件的路径
+
+## ---后续看4.6）REPLICATION复制
+
+## 4.7）SECURITY安全
+
+### 4.7.1）访问密码的查看、设置和取消
+
+![98](images/98.png)
+
+```shell
+#获取当前的密码
+127.0.0.1:6379> CONFIG get requirepass
+1) "requirepass"
+2) ""
+#设置密码 为 123456
+127.0.0.1:6379> CONFIG set requirepass "123456"
+OK
+127.0.0.1:6379> ping
+(error) NOAUTH Authentication required.
+#使用auth 密码验证
+127.0.0.1:6379> auth 123456
+OK
+127.0.0.1:6379> ping
+PONG
+#获取当前的密码
+127.0.0.1:6379> CONFIG get requirepass
+1) "requirepass"
+2) "123456"
+#设置密码 为 “”
+127.0.0.1:6379> CONFIG set requirepass ""
+OK
+127.0.0.1:6379> ping
+PONG
+127.0.0.1:6379> 
+```
+
+## 4.8）LIMITS限制
+
+### 4.8.1）`Maxclients`
+
+- 设置redis同时可以与多少个客户端进行连接。默认情况下为**10000个客户端**。
+- 当你无法设置进程文件句柄限制时，redis会设置为当前的文件句柄限制值减去32，因为redis会为自
+  身内部处理逻辑留一些句柄出来。
+- 如果达到了此限制，redis则会拒绝新的连接请求，并且向这些连接请求方发出“max number of clients reached”以作回应。
+
+### 4.8.2）`Maxmemory`
+
+- 设置redis可以使用的内存量。一旦到达内存使用上限，redis将会试图移除内部数据。
+- 移除规则可以通过maxmemory-policy来指定。如果redis无法根据移除规则来移除内存中的数据，或者设置了“不允许移除”，那么redis则会针对那些需要申请内存的指令返回错误信息，比如SET、LPUSH等。
+- 但是对于无内存申请的指令，仍然会正常响应，比如GET等。如果你的redis是主redis（说明你的redis有从redis），那么在设置内存使用上限时，需要在系统中留出一些内存空间给同步队列缓存，只有在你设置的是“不移除”的情况下，才不用考虑这个因素
+
+### 4.8.3）`Maxmemory-policy`
+
+- （1）volatile-lru：使用LRU算法移除key，只对设置了过期时间的键
+- （2）allkeys-lru：使用LRU算法移除key
+- （3）volatile-random：在过期集合中移除随机的key，只对设置了过期时间的键
+- （4）allkeys-random：移除随机的key
+- （5）volatile-ttl：移除那些TTL值最小的key，即那些最近要过期的key
+- （6）noeviction：不进行移除。针对写操作，只是返回错误信息
+
+### 4.8.4）Maxmemory-samples
+
+- 设置样本数量，LRU算法和最小TTL算法都并非是精确的算法，而是估算值，所以你可以设置样本的大小，
+  **redis默认会检查这么多个key并选择其中LRU的那个**
+
+## ---后续看4.9）APPEND ONLY MODE追加
+
+### 4.10）重点常见配置redis.conf介绍
+
+```shell
+参数说明
+redis.conf 配置项说明如下：
+1. Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程
+  daemonize no
+2. 当Redis以守护进程方式运行时，Redis默认会把pid写入/var/run/redis.pid文件，可以通过pidfile指定
+  pidfile /var/run/redis.pid
+3. 指定Redis监听端口，默认端口为6379，作者在自己的一篇博文中解释了为什么选用6379作为默认端口，因为6379在手机按键上MERZ对应的号码，而MERZ取自意大利歌女Alessia Merz的名字
+  port 6379
+4. 绑定的主机地址
+  bind 127.0.0.1
+5.当 客户端闲置多长时间后关闭连接，如果指定为0，表示关闭该功能
+  timeout 300
+6. 指定日志记录级别，Redis总共支持四个级别：debug、verbose、notice、warning，默认为verbose
+  loglevel verbose
+7. 日志记录方式，默认为标准输出，如果配置Redis为守护进程方式运行，而这里又配置为日志记录方式为标准输出，则日志将会发送给/dev/null
+  logfile stdout
+8. 设置数据库的数量，默认数据库为0，可以使用SELECT <dbid>命令在连接上指定数据库id
+  databases 16
+9. 指定在多长时间内，有多少次更新操作，就将数据同步到数据文件，可以多个条件配合
+  save <seconds> <changes>
+  Redis默认配置文件中提供了三个条件：
+  save 900 1
+  save 300 10
+  save 60 10000
+  分别表示900秒（15分钟）内有1个更改，300秒（5分钟）内有10个更改以及60秒内有10000个更改。
+ 
+10. 指定存储至本地数据库时是否压缩数据，默认为yes，Redis采用LZF压缩，如果为了节省CPU时间，可以关闭该选项，但会导致数据库文件变的巨大
+  rdbcompression yes
+11. 指定本地数据库文件名，默认值为dump.rdb
+  dbfilename dump.rdb
+12. 指定本地数据库存放目录
+  dir ./
+13. 设置当本机为slav服务时，设置master服务的IP地址及端口，在Redis启动时，它会自动从master进行数据同步
+  slaveof <masterip> <masterport>
+14. 当master服务设置了密码保护时，slav服务连接master的密码
+  masterauth <master-password>
+15. 设置Redis连接密码，如果配置了连接密码，客户端在连接Redis时需要通过AUTH <password>命令提供密码，默认关闭
+  requirepass foobared
+16. 设置同一时间最大客户端连接数，默认无限制，Redis可以同时打开的客户端连接数为Redis进程可以打开的最大文件描述符数，如果设置 maxclients 0，表示不作限制。当客户端连接数到达限制时，Redis会关闭新的连接并向客户端返回max number of clients reached错误信息
+  maxclients 128
+17. 指定Redis最大内存限制，Redis在启动时会把数据加载到内存中，达到最大内存后，Redis会先尝试清除已到期或即将到期的Key，当此方法处理 后，仍然到达最大内存设置，将无法再进行写入操作，但仍然可以进行读取操作。Redis新的vm机制，会把Key存放内存，Value会存放在swap区
+  maxmemory <bytes>
+18. 指定是否在每次更新操作后进行日志记录，Redis在默认情况下是异步的把数据写入磁盘，如果不开启，可能会在断电时导致一段时间内的数据丢失。因为 redis本身同步数据文件是按上面save条件来同步的，所以有的数据会在一段时间内只存在于内存中。默认为no
+  appendonly no
+19. 指定更新日志文件名，默认为appendonly.aof
+   appendfilename appendonly.aof
+20. 指定更新日志条件，共有3个可选值： 
+  no：表示等操作系统进行数据缓存同步到磁盘（快） 
+  always：表示每次更新操作后手动调用fsync()将数据写到磁盘（慢，安全） 
+  everysec：表示每秒同步一次（折衷，默认值）
+  appendfsync everysec
+ 
+21. 指定是否启用虚拟内存机制，默认值为no，简单的介绍一下，VM机制将数据分页存放，由Redis将访问量较少的页即冷数据swap到磁盘上，访问多的页面由磁盘自动换出到内存中（在后面的文章我会仔细分析Redis的VM机制）
+   vm-enabled no
+22. 虚拟内存文件路径，默认值为/tmp/redis.swap，不可多个Redis实例共享
+   vm-swap-file /tmp/redis.swap
+23. 将所有大于vm-max-memory的数据存入虚拟内存,无论vm-max-memory设置多小,所有索引数据都是内存存储的(Redis的索引数据 就是keys),也就是说,当vm-max-memory设置为0的时候,其实是所有value都存在于磁盘。默认值为0
+   vm-max-memory 0
+24. Redis swap文件分成了很多的page，一个对象可以保存在多个page上面，但一个page上不能被多个对象共享，vm-page-size是要根据存储的 数据大小来设定的，作者建议如果存储很多小对象，page大小最好设置为32或者64bytes；如果存储很大大对象，则可以使用更大的page，如果不 确定，就使用默认值
+   vm-page-size 32
+25. 设置swap文件中的page数量，由于页表（一种表示页面空闲或使用的bitmap）是在放在内存中的，，在磁盘上每8个pages将消耗1byte的内存。
+   vm-pages 134217728
+26. 设置访问swap文件的线程数,最好不要超过机器的核数,如果设置为0,那么所有对swap文件的操作都是串行的，可能会造成比较长时间的延迟。默认值为4
+   vm-max-threads 4
+27. 设置在向客户端应答时，是否把较小的包合并为一个包发送，默认为开启
+  glueoutputbuf yes
+28. 指定在超过一定的数量或者最大的元素超过某一临界值时，采用一种特殊的哈希算法
+  hash-max-zipmap-entries 64
+  hash-max-zipmap-value 512
+29. 指定是否激活重置哈希，默认为开启（后面在介绍Redis的哈希算法时具体介绍）
+  activerehashing yes
+30. 指定包含其它的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件
+  include /path/to/local.conf
+
+```
+
+
+
+# 五、Redis的持久化
+
+## 5.1）RDB（Redis DataBase）
+
+### 5.1.1）是什么
+
+- 在**指定的时间间隔内将内存中的数据集快照写入磁盘**，也就是行话讲的**Snapshot快照**，**它恢复时是将快照文件直接读到内存里**
+
+- **Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失。**
+
+### 5.1.2）Fork
+
+Fork的作用是**复制一个与当前进程一样的进程**。**新进程的所有数据（变量、环境变量、程序计数器等）**
+**数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程**
+
+### 5.1.3）Rdb 保存的是dump.rdb文件
+
+### 5.1.4）配置位置上面的配置4.5有记录
+
+### 5.1.5）如何触发RDB快照
+
+#### ①配置文件中默认的快照配置
+
+​	需要修改配置文件中的快照的设置，由原先的300秒改10次修改为120秒改10次，这里就不做记录了
+
+​	**注意：冷拷贝后重新使用 例如：可以`cp dump.rdb dump_new.rdb`**
+
+#### ②命令`save`或者是`bgsave`
+
+- `Save`：**save时只管保存，其它不管，全部阻塞**
+- `BGSAVE`：Redis会在后台**异步进行快照操作**，**快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间**
+
+#### ③执行`flushall`命令，也会产生dump.rdb文件，但里面是空的，无意义
+
+### 5.1.6）如何恢复
+
+#### ①将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务即可
+
+#### ②CONFIG GET dir获取目录
+
+### 5.1.7）优势
+
+#### ①适合大规模的数据恢复
+
+#### ②对数据完整性和一致性要求不高
+
+### 5.1.8）劣势
+
+- **在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照后的所有修改**
+
+- **Fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑**
+
+### 5.1.9）如何停止
+
+**动态所有停止RDB保存规则的方法：**
+
+#### `redis-cli config set save ""`
+
+### 5.1.10）RDB总结
+
+<img src="images/104.png" alt="104" style="zoom: 80%;" />
+
+## 5.2）AOF（Append Only File）
+

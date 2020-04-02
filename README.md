@@ -16,5 +16,17 @@
 
 `tree /F >dirPath.txt`
 
+增加执行权限 `chmod a+x startRedis.sh`   
+
+列出谁在使用某个端口 如： `lsof -i :3306`
+
+vim中 `:set nu` 查看行号
+
+vim中跳到最后一行 `shift+g` 即G
+
+vim中跳到第一行 按两次 小`g`
+
+
+
 
 
