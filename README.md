@@ -28,5 +28,27 @@ vim中跳到第一行 按两次 小`g`
 
 
 
+##### CentOS7关闭防火墙和selinux
+
+直接上命令
+在root用户下
+`systemctl stop firewalld`
+`systemctl disable firewalld`
+`systemctl status firewalld`
+`vi /etc/selinux/config`
+把`SELINUX=enforcing` 改成 `SELINUX=disabled`
+重启电脑就可以了
+
+
+
+##### linux 更改 文件中的内容
+
+`sed -i “s/要替换的内容/替换后的内容/g” 文件名`
+
+使用#代替/能够适应替换内容中含有/的内容，不需要转译.不然还要使用//转译！.*是匹配所有内容！
+
+如  `sed -i 's#bind 0.0.0.0#bind 127.0.0.1#g' ./aaa.conf`
+
+
 
 
