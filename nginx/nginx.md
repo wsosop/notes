@@ -506,7 +506,7 @@ server {
     location / {
         root   html;
         #添加下面一行，转发到tomcat
-        proxy_pass http://127.0.0.1:8080
+        proxy_pass http://127.0.0.1:8080;
         index  index.html index.htm;
     }
 ```
