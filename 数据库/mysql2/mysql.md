@@ -217,7 +217,42 @@ select * from mytable2;
   **无论是修改 mysql 配置文件或是修改库、表字符集，都无法改变已经变成乱码的数据。**
   **只能删除数据重新插入或更新数据才可以完全解决**
 
-### 1.2.9）Mysql的安装位置，在linux下查看安装目录 `ps -ef|grep mysql`
+### 1.2.9）设置大小写不敏感
+
+①查看大小写是否敏感：`show variables like '%lower_case_names%';`
+
+windows系统默认大小写是不敏感的，**但是linux默认大小写是敏感的**
+
+```mysql
+mysql> show variables like '%lower_case_table_names%';
++------------------------+-------+
+| Variable_name          | Value |
++------------------------+-------+
+| lower_case_table_names | 0     |
++------------------------+-------+
+1 row in set (0.00 sec)
+
+```
+
+②设置大小写不敏感：在` /etc/my.cnf` 这个配置文件 `[mysqld]` 中加入 `lower_case_table_names = 1 `，然后重启服务器
+
+<img src="images/54.png" alt="54" style="zoom:80%;" />
+
+```mysql
+lower_case_table_names = 1
+```
+
+| 属性设置 | 描述                                                         |
+| -------- | ------------------------------------------------------------ |
+| 0        | 大小写敏感                                                   |
+| 1        | 大小写不敏感。创建的表，数据库都是以小写形式存放在磁盘上，对于 sql 语句都是转换为<br/>小写对表和 DB 进行查找 |
+| 2        | 创建的表和 DB 依据语句上格式存放，凡是查找都是转换为小写进行 |
+
+**注意：注意：如果要设置属性为大小写不敏感，要在重启数据库实例之前就需要将原来的数据库和表转换为小写，否则将找不到数据库名。在进行数据库参数设置之前，需要掌握这个参数带来的影响，切不可盲目设置。**
+
+
+
+### 1.2.10）Mysql的安装位置，在linux下查看安装目录 `ps -ef|grep mysql`
 
 在 使用`ps -ef|grep mysql`命令后 ,可以看到   --datadir=/var/lib/mysql 数据库的存放路径
 
@@ -576,7 +611,7 @@ mysql> select * from tbl_emp a left join tbl_dept b on a.deptId=b.id where b.id 
 
 ### 2.3.1）是什么
 
-- MySQL官方对索引的定义为：索引(Index)是帮助MySQL高校获取数据的数据结构。
+- MySQL官方对索引的定义为：索引(Index)是帮助MySQL高效获取数据的数据结构。
   可以得到索引的本质：**索引是数据结构**
 
 - 你可以简单理解为"**排好序的快速查找数据结构**"。
@@ -774,7 +809,7 @@ B+Tree 与 B-Tree 的区别
 
 ##### ① id
 
-selct 查询的序列号,包含一组数字，表示查询中执行 selct 子句或操作表的顺序。
+selct 查询的序列号,包含一组数字，表示查询中执行 select 子句或操作表的顺序。
 
 **三种情况**
 
@@ -804,13 +839,13 @@ selct 查询的序列号,包含一组数字，表示查询中执行 selct 子句
 
 | selct_ype 属性      | 含义                                                         |
 | ------------------- | ------------------------------------------------------------ |
-| **SIMPLE**          | 简单的 selct 查询,查询中不包含子查询或者 UNION               |
+| **SIMPLE**          | 简单的 select 查询,查询中不包含子查询或者 UNION              |
 | **PRIMARY**         | 查询中若包含任何复杂的子部分，最外层查询则被标记为 Primary   |
-| **SUBQUERY**        | 在SELCT或WHER列表中包含了子查询                              |
+| **SUBQUERY**        | 在SELECT或WHERE列表中包含了子查询                            |
 | **DERIVED**         | 在 FROM 列表中包含的子查询被标记为 DERIVED(衍生)<br/>MySQL 会递归执行这些子查询, 把结果放在临时表里 |
-| **UNION**           | 若第二个SELCT出现在UNION之后，则被标记为UNION；<br/>若UNION包含在FROM子句的子查询中,外层SELCT将被标记为：DERIVED |
-| **UNION RESULT**    | 从UNION表获取结果的SELCT                                     |
-| DEPDENT SUBQUERY    | 在SELCT或WHER列表中包含了子查询,子查询基于外层               |
+| **UNION**           | 若第二个SELECT出现在UNION之后，则被标记为UNION；<br/>若UNION包含在FROM子句的子查询中,外层SELECT将被标记为：DERIVED |
+| **UNION RESULT**    | 从UNION表获取结果的SELECT                                    |
+| DEPDENT SUBQUERY    | 在SELECT或WHERE列表中包含了子查询,子查询基于外层             |
 | UNCAHEABLE SUBQUERY | 无法使用缓存的子查询                                         |
 
 ##### ③table
@@ -853,7 +888,7 @@ type 是查询的访问类型。是较为重要的一个指标，结果值从最
 4. **ref**
 
 非唯一性索引扫描，返回匹配某个单独值的所有行.**本质上也是一种索引访问**，它返回所有匹配某个单独值的行，
-然而，它可能会找到多个符合条件的行，所以他应该属于查找和扫描的混合体。
+然而，**它可能会找到多个符合条件的行**，所以他应该属于查找和扫描的混合体。
 
 <img src="images/39.png" alt="39" style="zoom:80%;" />
 
@@ -884,7 +919,7 @@ Ful Table Scan，将遍历全表以找到匹配的行。
 
 ##### ⑥key
 
-- 实际使用的索引。如果为NUL，则没有使用索引。
+- 实际使用的索引。如果为NULL，则没有使用索引。
 
 - 查询中若使用了**覆盖索引**，则索引和查询的select字段重叠
 
@@ -897,9 +932,223 @@ Ful Table Scan，将遍历全表以找到匹配的行。
 
 <img src="images/44.png" alt="44" style="zoom:80%;" />
 
+##### ⑧ref
+
+显示索引那一列被使用了，如果可能的话，是一个常数。那些列或常量被用于查找索引列上的值
+
+<img src="images/45.png" alt="45" style="zoom:90%;" />
+
+##### ⑨rows
+
+根据表统计信息及索引选用情况，大致估算出找到所需的记录所需要读取的行数【越少越好】
+
+<img src="images/46.png" alt="46" style="zoom:90%;" />
+
+##### ⑩Extra
+
+包含不适合在其他列中显示但十分重要的额外信息
+
+1. **Using filesort(危险)**
+
+说明mysql会对数据使用一个外部的索引排序，而不是按照表内的索引顺序进行读取。
+MySQL中无法利用索引完成排序操作成为“文件排序”。
+
+![47](images/47.png)
+
+2. **Using temporary(危险)**
+
+使用了临时表保存中间结果，MySQL在对查询结果排序时使用临时表。常见于排序order by 和分组查询 group by
+
+![48](images/48.png)
+
+3. **USING index(很好)**
+
+表示相应的select操作中使用了覆盖索引（Coveing Index）,避免访问了表的数据行，效率不错！
+
+- 如果同时出现`using where`，表明索引被用来执行索引键值的**查找**；
+- 如果没有同时出现`using where`，表面索引用来读取数据**而非执行查找动作**。
+
+![49](images/49.png)
+
+覆盖索引（Covering Index）
+
+![50](images/50.png)
+
+4. Using where
+
+表明使用了where过滤
+
+5. using join buffer
+
+使用了连接缓存
+
+6. impossible where
+
+where子句的值总是false，不能用来获取任何元组,下面的例子是 查询的名称既是July，又是 z3 所以不可能出现既是July 又是 z3的记录，所以是 `impossible where`
+
+![51](images/51.png)
 
 
 
+7. select tables optimized away
 
+在没有GROUPBY子句的情况下，基于索引优化MIN/MAX操作或者
+对于MyISAM存储引擎优化COUNT(*)操作，不必等到执行阶段再进行计算，
+查询执行计划生成的阶段即完成优化。
 
+8. distinct
+
+优化distinct，在找到第一匹配的元组后即停止找同样值的工作
+
+#### 2.4.3.5）热身Case
+
+![52](images/52.png)
+
+![53](images/53.png)
+
+## 2.5）索引优化
+
+### 2.5.1）索引分析
+
+#### ①单表
+
+1. 建表SQL
+
+```mysql
+单表
+CREATE TABLE IF NOT EXISTS `article`(
+`id` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`author_id` INT (10) UNSIGNED NOT NULL,
+`category_id` INT(10) UNSIGNED NOT NULL , 
+`views` INT(10) UNSIGNED NOT NULL , 
+`comments` INT(10) UNSIGNED NOT NULL,
+`title` VARBINARY(255) NOT NULL,
+`content` TEXT NOT NULL
+);
+ 
+INSERT INTO `article`(`author_id`,`category_id` ,`views` ,`comments` ,`title` ,`content` )VALUES
+(1,1,1,1,'1','1'),
+(2,2,2,2,'2','2'),
+(1,1,3,3,'3','3');
+ 
+SELECT * FROM ARTICLE;
+```
+
+2. 案例
+
+![55](images/55.png)
+
+![56](images/56.png)
+
+![57](images/57.png)
+
+```mysql
+mysql> CREATE TABLE IF NOT EXISTS `article`(
+    -> `id` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    -> `author_id` INT (10) UNSIGNED NOT NULL,
+    -> `category_id` INT(10) UNSIGNED NOT NULL , 
+    -> `views` INT(10) UNSIGNED NOT NULL , 
+    -> `comments` INT(10) UNSIGNED NOT NULL,
+    -> `title` VARBINARY(255) NOT NULL,
+    -> `content` TEXT NOT NULL
+    -> );
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  
+mysql>  
+mysql> INSERT INTO `article`(`author_id`,`category_id` ,`views` ,`comments` ,`title` ,`content` )VALUES
+    -> (1,1,1,1,'1','1'),
+    -> (2,2,2,2,'2','2'),
+    -> (1,1,3,3,'3','3');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+mysql> SELECT * FROM ARTICLE;
++----+-----------+-------------+-------+----------+-------+---------+
+| id | author_id | category_id | views | comments | title | content |
++----+-----------+-------------+-------+----------+-------+---------+
+|  1 |         1 |           1 |     1 |        1 | 1     | 1       |
+|  2 |         2 |           2 |     2 |        2 | 2     | 2       |
+|  3 |         1 |           1 |     3 |        3 | 3     | 3       |
++----+-----------+-------------+-------+----------+-------+---------+
+mysql> select id,author_id from article where category_id=1 and comments > 1 order by views desc limit 1;
++----+-----------+
+| id | author_id |
++----+-----------+
+|  3 |         1 |
++----+-----------+
+1 row in set (0.00 sec)
+mysql> show index from article;
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| article |          0 | PRIMARY  |            1 | id          | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
++---------+------------+----------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+1 row in set (0.00 sec)
+mysql> explain select id,author_id from article where category_id=1 and comments > 1 order by views desc limit 1;
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+| id | select_type | table   | type | possible_keys | key  | key_len | ref  | rows | Extra                       |
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+|  1 | SIMPLE      | article | ALL  | NULL          | NULL | NULL    | NULL |    3 | Using where; Using filesort |
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+1 row in set (0.00 sec)
+mysql> create index idx_article_ccv on article(category_id,comments,views);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> show index from article;
++---------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name        | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| article |          0 | PRIMARY         |            1 | id          | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
+| article |          1 | idx_article_ccv |            1 | category_id | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
+| article |          1 | idx_article_ccv |            2 | comments    | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
+| article |          1 | idx_article_ccv |            3 | views       | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
++---------+------------+-----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+4 rows in set (0.00 sec)
+mysql> explain select id,author_id from article where category_id=1 and comments > 1 order by views desc limit 1;
++----+-------------+---------+-------+-----------------+-----------------+---------+------+------+-----------------------------+
+| id | select_type | table   | type  | possible_keys   | key             | key_len | ref  | rows | Extra                       |
++----+-------------+---------+-------+-----------------+-----------------+---------+------+------+-----------------------------+
+|  1 | SIMPLE      | article | range | idx_article_ccv | idx_article_ccv | 8       | NULL |    1 | Using where; Using filesort |
++----+-------------+---------+-------+-----------------+-----------------+---------+------+------+-----------------------------+
+1 row in set (0.00 sec)
+
+mysql> explain select id,author_id from article where category_id=1 and comments = 1 order by views desc limit 1;
++----+-------------+---------+------+-----------------+-----------------+---------+-------------+------+-------------+
+| id | select_type | table   | type | possible_keys   | key             | key_len | ref         | rows | Extra       |
++----+-------------+---------+------+-----------------+-----------------+---------+-------------+------+-------------+
+|  1 | SIMPLE      | article | ref  | idx_article_ccv | idx_article_ccv | 8       | const,const |    1 | Using where |
++----+-------------+---------+------+-----------------+-----------------+---------+-------------+------+-------------+
+1 row in set (0.00 sec)
+mysql> drop index idx_article_ccv on article;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> explain select id,author_id from article where category_id=1 and comments = 1 order by views desc limit 1;
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+| id | select_type | table   | type | possible_keys | key  | key_len | ref  | rows | Extra                       |
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+|  1 | SIMPLE      | article | ALL  | NULL          | NULL | NULL    | NULL |    3 | Using where; Using filesort |
++----+-------------+---------+------+---------------+------+---------+------+------+-----------------------------+
+1 row in set (0.00 sec)
+mysql> create index idx_article_cv on article(category_id,views);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> show index from article;
++---------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| Table   | Non_unique | Key_name       | Seq_in_index | Column_name | Collation | Cardinality | Sub_part | Packed | Null | Index_type | Comment | Index_comment |
++---------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+| article |          0 | PRIMARY        |            1 | id          | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
+| article |          1 | idx_article_cv |            1 | category_id | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
+| article |          1 | idx_article_cv |            2 | views       | A         |           3 |     NULL | NULL   |      | BTREE      |         |               |
++---------+------------+----------------+--------------+-------------+-----------+-------------+----------+--------+------+------------+---------+---------------+
+3 rows in set (0.00 sec)
+mysql> explain select id,author_id from article where category_id=1 and comments >1 order by views desc limit 1;
++----+-------------+---------+------+----------------+----------------+---------+-------+------+-------------+
+| id | select_type | table   | type | possible_keys  | key            | key_len | ref   | rows | Extra       |
++----+-------------+---------+------+----------------+----------------+---------+-------+------+-------------+
+|  1 | SIMPLE      | article | ref  | idx_article_cv | idx_article_cv | 4       | const |    2 | Using where |
++----+-------------+---------+------+----------------+----------------+---------+-------+------+-------------+
+1 row in set (0.00 sec)
+```
 
