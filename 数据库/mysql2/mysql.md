@@ -1152,3 +1152,261 @@ mysql> explain select id,author_id from article where category_id=1 and comments
 1 row in set (0.00 sec)
 ```
 
+#### ②两表
+
+1. 建表语句
+
+```mysql
+CREATE TABLE IF NOT EXISTS `class`(
+`id` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`card` INT (10) UNSIGNED NOT NULL
+);
+ 
+CREATE TABLE IF NOT EXISTS `book`(
+`bookid` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`card` INT (10) UNSIGNED NOT NULL
+);
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO class(card)VALUES(FLOOR(1+(RAND()*20)));
+ 
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO book(card)VALUES(FLOOR(1+(RAND()*20)));
+```
+
+2. 案例
+
+案例总结： 
+
+1. 当使用`left  join `的时候，左侧的表会全表扫描，则索引要建在连接的右侧的表的哪个连接条件
+2. 当使用`right join `的时候，右侧的表会被全表扫描，则索引要建在左侧的哪个表的连接条件
+
+**总结就是：两表 进行 `left join /right join` 的时候，相应的索引要建在相反的表的连接条件。**
+
+代码参考：
+
+```mysql
+mysql> explain select * from class left join book on class.card=book.card;
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref  | rows | Extra |
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+|  1 | SIMPLE      | class | ALL  | NULL          | NULL | NULL    | NULL |   20 |       |
+|  1 | SIMPLE      | book  | ALL  | NULL          | NULL | NULL    | NULL |   20 |       |
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+2 rows in set (0.00 sec)
+mysql> alter table `book` add index Y (`card`);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> explain select * from class left join book on class.card=book.card;
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref               | rows | Extra       |
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+|  1 | SIMPLE      | class | ALL  | NULL          | NULL | NULL    | NULL              |   20 |             |
+|  1 | SIMPLE      | book  | ref  | Y             | Y    | 4       | db0629.class.card |    1 | Using index |
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+2 rows in set (0.00 sec)
+mysql> drop index Y on book;
+```
+
+#### ③三表
+
+1.建表语句
+
+**在上面两表的基础上再增加下面一个表**
+
+```mysql
+CREATE TABLE IF NOT EXISTS `phone`(
+`phoneid` INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+`card` INT (10) UNSIGNED NOT NULL
+)ENGINE = INNODB;
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+INSERT INTO phone(card)VALUES(FLOOR(1+(RAND()*20)));
+```
+
+2. 案例
+
+<img src="images/58.png" alt="58" style="zoom:90%;" />
+
+<img src="images/58.png" alt="59" style="zoom:90%;" />
+
+```mysql
+mysql> explain select * from class left join book on class.card=book.card left join phone on book.card=phone.card;
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref  | rows | Extra |
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+|  1 | SIMPLE      | class | ALL  | NULL          | NULL | NULL    | NULL |   20 |       |
+|  1 | SIMPLE      | book  | ALL  | NULL          | NULL | NULL    | NULL |   20 |       |
+|  1 | SIMPLE      | phone | ALL  | NULL          | NULL | NULL    | NULL |   20 |       |
++----+-------------+-------+------+---------------+------+---------+------+------+-------+
+3 rows in set (0.00 sec)
+mysql> alter table phone add index z(card);
+Query OK, 0 rows affected (0.02 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> alter table book add index Y(card);
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> explain select * from class left join book on class.card=book.card left join phone on book.card=phone.card;
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref               | rows | Extra       |
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+|  1 | SIMPLE      | class | ALL  | NULL          | NULL | NULL    | NULL              |   20 |             |
+|  1 | SIMPLE      | book  | ref  | Y             | Y    | 4       | db0629.class.card |    1 | Using index |
+|  1 | SIMPLE      | phone | ref  | z             | z    | 4       | db0629.book.card  |    1 | Using index |
++----+-------------+-------+------+---------------+------+---------+-------------------+------+-------------+
+3 rows in set (0.00 sec)
+
+mysql> 
+```
+
+### 2.5.2）索引失效（应该避免）
+
+#### 2.5.2.1）建表SQL
+
+```mysql
+CREATE TABLE staffs(
+id INT PRIMARY KEY AUTO_INCREMENT,
+NAME VARCHAR(24) NOT NULL DEFAULT '' COMMENT '姓名',
+age INT NOT NULL DEFAULT 0 COMMENT '年龄',
+pos VARCHAR(20) NOT NULL DEFAULT '' COMMENT '职位',
+add_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '入职时间'
+)CHARSET utf8 COMMENT '员工记录表';
+ 
+INSERT INTO staffs(NAME,age,pos,add_time) VALUES('z3',22,'manager',NOW());
+INSERT INTO staffs(NAME,age,pos,add_time) VALUES('July',23,'dev',NOW());
+INSERT INTO staffs(NAME,age,pos,add_time) VALUES('2000',23,'dev',NOW());
+ 
+SELECT * FROM staffs;
+ALTER TABLE staffs ADD INDEX idx_staffs_nameAgePos(name,age,pos);
+```
+
+#### 2.5.2.2）案例（索引失效）
+
+1.**全值匹配我最爱**
+
+<img src="images/60.png" alt="60" style="zoom:80%;" />
+
+2. **最佳左前缀法则**【带头大哥不能死，中间兄弟不能断。】
+
+如果索引了多列，**要遵守最左前缀法则**。指的是查询从索引的最左前列开始**并且不跳过索引中的列**。
+
+![61](images/61.png)
+
+3. **不在索引列上做任何操作（计算、函数、（自动or手动）类型转换），否则会导致索引失效而转向全表扫描**
+
+![62](images/62.png)
+
+4. **存储引擎不能使用索引中范围条件右边的列**
+
+![63](images/63.png)
+
+5. **尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），减少`select*`**
+
+ ![64](images/64.png)
+
+![65](images/65.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
