@@ -1336,57 +1336,434 @@ ALTER TABLE staffs ADD INDEX idx_staffs_nameAgePos(name,age,pos);
 
 #### 2.5.2.2）案例（索引失效）
 
-1.**全值匹配我最爱**
+##### 1.全值匹配我最爱
 
 <img src="images/60.png" alt="60" style="zoom:80%;" />
 
-2. **最佳左前缀法则**【带头大哥不能死，中间兄弟不能断。】
+##### 2.最佳左前缀法则【带头大哥不能死，中间兄弟不能断。】
 
 如果索引了多列，**要遵守最左前缀法则**。指的是查询从索引的最左前列开始**并且不跳过索引中的列**。
 
 ![61](images/61.png)
 
-3. **不在索引列上做任何操作（计算、函数、（自动or手动）类型转换），否则会导致索引失效而转向全表扫描**
+##### 3.不在索引列上做任何操作（计算、函数、（自动or手动）类型转换），否则会导致索引失效而转向全表扫描
 
 ![62](images/62.png)
 
-4. **存储引擎不能使用索引中范围条件右边的列**
+##### 4.存储引擎不能使用索引中范围条件右边的列
 
 ![63](images/63.png)
 
-5. **尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），减少`select*`**
+##### 5.尽量使用覆盖索引（只访问索引的查询（索引列和查询列一致）），减少`select*`
 
- ![64](images/64.png)
+![64](images/64.png)
 
 ![65](images/65.png)
 
+##### 6.mysql在使用不等于`（！=或者<>）`的时候无法使用索引会导致全表扫描
+
+![66](images/66.png)
+
+##### 7.`is null,is not null `也无法使用索引
+
+![67](images/67.png)
+
+##### 8.`like`以通配符开头`（'%abc...'）`mysql索引失效会变成全表扫描操作
+
+![68](images/68.png)
+
+**如何解决搜索条件`%abc%`失效的问题？解决like'%字符串%'索引不被使用的方法？？**
+
+建表语句：
+
+```mysql
+CREATE TABLE tbl_user ( id INT(11) NOT NULL AUTO_INCREMENT, NAME VARCHAR(20) DEFAULT NULL, age INT(11) DEFAULT NULL,  email VARCHAR(20) DEFAULT NULL, PRIMARY KEY (id) ) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+#drop table tbl_user 
+INSERT INTO tbl_user(NAME, age, email) VALUES('1aa1',21,'b@163.com'); 
+INSERT INTO tbl_user(NAME, age, email) VALUES('2aa2',222,'a@163.com');
+INSERT INTO tbl_user(NAME, age, email) VALUES('3aa3',265,'c@163.com'); 
+INSERT INTO tbl_user(NAME, age, email) VALUES('4aa4',21,'d@163.com');	
+INSERT INTO tbl_user(NAME, age, email) VALUES('aa',121,'e@163.com');
+#在建索引之前
+select * from tbl_user;
+explain select name,age from tbl_user where name like '%aa%';
+explain select id from tbl_user where name like '%aa%';
+explain select * from tbl_user where name like '%aa%';
+explain select name from tbl_user where name like '%aa%';
+explain select age from tbl_user where name like '%aa%';
+explain select id,name from tbl_user where name like '%aa%';
+explain select id,name,age from tbl_user where name like '%aa%';
+explain select id,name,age,email from tbl_user where name like '%aa%';
+#没建索引之前，全部都是全表扫描
+
+######添加索引
+create index idx_user_nameAge on tbl_user(name,age);
+explain select name,age from tbl_user where name like '%aa%';
+explain select id from tbl_user where name like '%aa%';
+explain select name from tbl_user where name like '%aa%';
+explain select age from tbl_user where name like '%aa%';
+explain select id,name from tbl_user where name like '%aa%';
+explain select id,name,age from tbl_user where name like '%aa%';
+explain select name,age from tbl_user where name like '%aa%';
+explain select * from tbl_user where name like '%aa%';
+explain select id,name,age,email from tbl_user where name like '%aa%';
+
+```
+
+![69](images/69.png)
+
+##### 9.字符串不加单引号索引失效
+
+![70](images/70.png)
+
+##### 10.少用or,用它连接时会索引失效
+
+![71](images/71.png)
+
+##### 11.小总结
+
+![72](images/72.png)
+
+`like KK%`相当于=常量    ` %KK`和`%KK%` 相当于范围
+
+**【优化总结口决】**
+
+全值匹配我最爱，最左前缀要遵守；
+
+带头大哥不能死，中间兄弟不能断；
+
+素引列上少计算，范围之后全失效；
+
+LIKE百分写最右，覆盖素引不写星；
+
+不等空值还有or，索引失效要少用；
+
+VAR引号不可丢，SQL高级也不难！
+
+### 2.5.6）试题讲解
+
+#### 2.5.6.1）题目sql
+
+```mysql
+create table test03(
+	id int primary key not null auto_increment, 
+	c1 char(10),
+	c2 char(10),
+	c3 char(10),
+	c4 char(10), 
+	c5 char(10)
+);
+
+insert into test03(c1,c2,c3,c4,c5) values('a1','a2','a3','a4','a5');
+insert into test03(c1,c2,c3,c4,c5) values('b1','b2','b3','b4','b5'); 
+insert into test03(c1,c2,c3,c4,c5) values('c1','c2','c3','c4','c5'); 
+insert into test03(c1,c2,c3,c4,c5) values('d1','d2','d3','d4','d5'); 
+insert into test03(c1,c2,c3,c4,c5) values('e1','e2','e3','e4','e5');
+
+select * from test03;
+create index idx_test03_c1234 on test03(c1,c2,c3,c4);
+show index from test03;
+```
+
+#### 2.5.6.2）索引命中-排序-分组-问题
+
+我们创建了复合索引idx_test03_c1234,根据以下sql分析下索引使用情况？
 
 
 
+- **情况一：`where `顺序使用，并且和索引顺序一致**
+
+**图1 `where `顺序使用，并且和索引顺序一致**
+
+![73](images/73.png)
+
+图1中全部是`where`和索引的顺序一致，使用到了索引，并且为 `const`
 
 
 
+- **情况二 `where` 中的查找字段都在索引之中，并且是 等值 `where` 顺序颠倒**
+
+**图2 `where` 中的查找字段都在索引之中，并且是 等值 `where` 顺序颠倒**
+
+![74](images/74.png)
+
+图2中，where中的查询顺序和索引中的不一致，也能使用到索引，命中了索引。为什么呢？
+
+<img src="images/75.png" alt="75" style="zoom: 67%;" />
+
+mysql对查询语句优化 特别是常量,因此才会内部进行了顺序的调整从而用上了索引
 
 
 
+- **情况三 按照索引顺序，但是 c3 是范围 查找，则 c4 不会用到索引** 
+
+![76](images/76.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' and c3> 'a3' and c4='a4'; `c1和c2用上了索引，从c3开始就是range了，c4就没法用索引了
 
 
 
+- **情况四 接上面的情况三，再换个顺序 把范围查找放在 c4上**
+
+![77](images/77.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' and c4>'a4' and c3='a3';`
+
+mysql自己会调整顺序，c1,c2,c3,c4都用到了索引，c4被调整到了最后,key_len说明c4被调整了到了最后面。
 
 
 
+- **情况五 带上`orderby` 索引使用的情况**
+
+![78](images/78.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' and c4='a4' order by c3;`
+
+用上了`order by`  本来` c2 `和 `c4 `中间 断了`c3`  如果 `order by c3` 会怎么样？
+
+可以看到 索引用到了两个，分别是 `c1和c2` ，`c3`被用在了 排序上
+
+原因是：索引两大功能：**查找和排序**。**c1，c2用到了索引，用于查找。c3也用到了索引，用于排序。**
 
 
 
+- **情况六 接上面情况五，去掉`c4`**
+
+![79](images/79.png)
+
+结果和情况五 一样
 
 
 
+- **情况七 接上面情况六，把`order by c3 ` 改成`c4`**
+
+`explain select * from test03 where c1='a1' and c2='a2' order by c4;`
+
+![80](images/80.png)
+
+用到了 索引，但 出现了`Using filesort`
 
 
 
+- **情况八**
+
+`explain select * from test03 where c1='a1' and c5='a5' order by c2 ,c3;`
+
+![81](images/81.png)
+
+`c1`用到了索引 ，`c2，c3`用在了排序。
 
 
 
+- **情况九 接上面的情况八，把`order by c2 ,c3 `的顺序换下**
+
+`explain select * from test03 where c1='a1' and c5='a5' order by c3,c2;`
+
+![82](images/82.png)
+
+出现了`Using filesort `，我们建的索引是`（c1,c2,c3,c4）`它没有按照顺序来 顺序颠倒了`（3 ，2）`
+
+
+
+- **情况十** 
+
+![83](images/83.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' order by c2,c3;`
+
+`where` 条件的顺序和` order by `的条件 都和 索引的顺序一致，`where和order by ` 都用到了索引。
+
+
+
+- **情况十一  接情况十 多了个 `c5` ,但是没影响**
+
+![84](images/84.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' and c5='a5' order by c2,c3;`
+
+
+
+- **情况十二  `c3,c2`排序却没有`filesort`**
+
+![85](images/85.png)
+
+`explain select * from test03 where c1='a1' and c2='a2' and c5='a5' order by c3,c2;`
+
+`order byc3,c2`不出现`filesort`的特殊原因就是因为排序字段`c2`已经是一个常量`(c2='a2')`了。
+所以相当于 `order by c3,'a2常量'`
+
+
+
+- **情况十三 增加 `group by `**
+
+![86](images/86.png)
+
+`explain select * from test03 where c1='a1' and c4='a4' group by c2,c3;`
+
+`explain select * from test03 where c1='a1' group by c2,c3;`
+
+`explain select * from test03 where c1='a1' and c4='a4' group by c3,c2;`
+
+**注意：分组之前，肯定是先排序。对于索引优化来说，其实都差不多。**
+
+
+
+# 三、查询截取分析
+
+## 3.1）查询优化
+
+### 3.1.1）永远小表驱动大表类似嵌套循环Nested Loop
+
+例子：
+
+优化原则：小表驱动大表，即小的数据集驱动大的数据集
+
+################原理（RBO）#############
+
+> `select * from A where id in (select id from B)`
+>
+> 等价于：
+>
+> **for select id from B**
+>
+> **for select * from A  where A.id = B.id**
+>
+> 当B表的数据集必须小于A表的数据集时，用`in`优于`exists`
+>
+> 注意：A表与B表的ID字段应建立索引
+
+
+
+> `select * from A where exists (select 1 from B where B.id = A.id) `
+>
+> 等价于
+>
+> **for select  *  from A**
+>
+> **for select  *  from B where B.id = A.id**
+>
+> 当A表的数据集小于B表的数据集时，用`exists`优于`in`
+>
+> 注意：A表与B表的ID字段应建立索引
+
+- exists
+
+`SELECT ... FROM table WHERE EXISTS(subquery)`
+
+该语法可以理解为：**将主查询的数据，放到子查询中做条件验证，根据验证结果（TRUE 或 FALSE）来决定主查询的数据结果是否得以保留。**
+
+- 提示
+
+1. `EXISTS(subquery) `只返回`TRUE `或 `FALSE` ，因此子查询中的 `SELECT * `也可以是` SELECT 1 `或` select 'X'`，官方说法是实际执行时会忽略`SELECT `清单，因此没有区别
+2. `EXISTS` 子查询的实际执行过程可能经过了优化而不是我们理解上的逐条对比，如果担忧效率问题，可进行实际检验以确定是否有效率问题。
+3. `EXISTS` 子查询往往也可以用条件表达式、其他子查询或者`JOIN`来替代，何种最优需要具体问题具体分析。
+
+
+
+### 3.1.2 order by关键字优化
+
+#### 3.1.2.1）ORDER BY子句，尽量使用Index方式排序，避免使用FileSort方式排序
+
+##### 3.1.2.1.1）建表SQL
+
+```mysql
+CREATE TABLE tblA(
+	age INT,
+	birth TIMESTAMP NOT NULL
+);
+
+INSERT INTO tblA(age,birth) VALUES(22,NOW());
+INSERT INTO tblA(age,birth) VALUES(23,NOW());
+INSERT INTO tblA(age,birth) VALUES(24,NOW());
+
+CREATE INDEX idx_A_ageBirth ON tblA(age,birth);
+
+SELECT * FROM tblA;
+```
+
+##### 3.1.2.1.2）Case1
+
+![87](images/87.png)
+
+```mysql
+SELECT * FROM tblA;
+show index from tblA;
+explain select * from tblA where age>20 order by age;
+explain select * from tblA where age>20 order by age,birth;
+explain select * from tblA where age>20 order by birth;
+```
+
+##### 3.1.2.1.3）Case2
+
+![88](images/88.png)
+
+```mysql
+ explain select * from tblA order by birth;
+ explain select * from tblA where birth > '2016-01-28 00:00:00' order by birth;
+ explain select * from tblA where birth > '2016-01-28 00:00:00' order by age;
+ explain select * from tblA order by age asc,birth desc;
+```
+
+##### 3.1.2.1.4）MySQL支持二种方式的排序，FileSort和Index,Index效率高。它指MySQL扫描索引本身完成排序。FileSort方式效率较低。
+
+##### 3.1.2.1.5）ORDER BY满足两情况，会使用Index方式排序
+
+①`ORDER BY`语句使用索引最左前列
+
+②使用`where`子句与`OrderBy`子句条件列组合满足索引最左前列
+
+#### 3.1.2.2）尽可能在索引列上完成排序操作，遵照索引建的最佳左前缀
+
+#### 3.1.2.3）如果不在索引列上，filesort有两种算法：mysql就要启动双路排序和单路排序
+
+##### 3.1.2.3.1）双路排序
+
+①MySQL4.1之前是使用双路排序，字面意思是两次扫描磁盘，最终得到数据。
+读取行指针和`order by`列，对他们进行排序，然后扫描已经排序好的列表，按照列表中的值重新从列表中读取对应的数据传输
+
+②从磁盘取排序字段，在buffer进行排序，再从磁盘取其他字段。
+
+**注意：取一批数据，要对磁盘进行两次扫描，众所周知，I/O是很耗时的，所以在mysql4.1之后，出现了第二种改进的算法，就是单路排序**。
+
+##### 3.1.2.3.2）单路排序
+
+从磁盘读取查询需要的所有列，按照`order by`列在`buffer`对它们进行排序，然后扫描排序后的列表进行输出，
+它的效率更快一些，避免了第二次读取数据，并且把随机IO变成顺序IO，但是它会使用更多的空间，因为它把每一行都保存在内存中了。
+
+##### 3.1.2.3.3）结论及引申出的问题
+
+①由于单路是后出来的，总体而言好过双路
+
+②但是用单路有问题
+
+![89](images/89.png)
+
+
+
+#### 3.1.2.4）优化策略
+
+①增大sort_buffer_size参数的设置
+
+②增大max_length_for_sort_data参数的设置
+
+③Why
+
+![](images/90.png)
+
+#### 3.1.2.5）小总结
+
+<img src="images/91.png" alt="91" style="zoom:90%;" />
+
+
+
+### 3.1.3）GROUP BY关键字优化
+
+#### 3.1.3.1）`group by`实质是先排序后进行分组，遵照索引建的最佳左前缀
+
+#### 3.1.3.2）当无法使用索引列，增大max_length_for_sort_data参数的设置+增大sort_buffer_size参数的设置
+
+#### 3.1.3.3）`where`高于`having`,能写在`where`限定的条件就不要去`having`限定了。
 
 
 
