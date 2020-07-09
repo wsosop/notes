@@ -1767,6 +1767,564 @@ explain select * from tblA where age>20 order by birth;
 
 
 
+## 3.2）慢查询日志
+
+### 3.2.1）是什么
+
+<img src="images/92.png" alt="92" style="zoom:80%;" />
+
+### 3.2.2）怎么用
+
+#### 3.2.2.1）说明
+
+<img src="images/93.png" alt="93" style="zoom:80%;" />
+
+#### 3.2.2.2）查看是否开启及如何开启
+
+①默认
+
+`SHOW VARIABLES LIKE '%slow_query_log%'`
+
+<img src="images/94.png" alt="94" style="zoom:80%;" />
+
+②开启
+
+`set global slow_query_log = 1`
+
+<img src="images/95.png" alt="95" style="zoom:80%;" />
+
+
+
+<img src="images/96.png" alt="96" style="zoom:80%;" />
+
+#### 3.2.2.3）那么开启慢查询日志后，什么样的SQL才会记录到慢查询里面？
+
+`SHOW VARIABLES LIKE 'long_query_time%';`
+
+<img src="images/97.png" alt="97" style="zoom:80%;" />
+
+#### 3.2.2.4）Case
+
+##### ①查看当前多少秒算慢
+
+`SHOW VARIABLES LIKE 'long_query_time%';`
+
+<img src="images/97.png" alt="97" style="zoom:80%;" />
+
+##### ②设置慢的阙值时间
+
+`set global long_query_time=3;`
+
+<img src="images/98.png" alt="98" style="zoom:80%;" />
+
+##### ③为什么设置后看不出变化？
+
+1. 需要重新连接或者新开一个回话才能看到修改值。
+   `SHOW VARIABLES LIKE 'long_query_time%';`
+
+2. 使用`show global variables like 'long_query_time';`可以查看，但是一定要重新连接，或者新开一个会话，才能看到慢查询日志中的记录，否则看不到。
+
+##### ④记录慢SQL并后续分析
+
+![99](images/99.png)
+
+##### ⑤查询当前系统中有多少条慢查询记录
+
+`show global status like '%Slow_queries%';`
+
+![100](images/100.png)
+
+这个查询出来的是两条慢查询的记录
+
+##### ⑥慢查询配置的用法
+
+![101](images/101.png)
+
+### 3.2.3）日志分析工具mysqldumpshow
+
+![102](images/102.png)
+
+#### 3.2.3.1）查看mysqldumpshow的帮助信息
+
+`[root@localhost ~]# mysqldumpslow --help`
+
+![103](images/103.png)
+
+参数解释：
+
+- s:是表示按何种方式排序
+- c:访问次数
+- l:锁定时间
+- r:返回记录
+- t:查询时间
+- al:平均锁定时间
+- ar:平均返回记录数
+- at:平均查询时间
+- t:即为返回前面多少条的数据
+- g:后边搭配一个正则匹配模式，大小写不敏感的
+
+#### 3.2.3.2）工作常用参考
+
+![104](images/104.png)
+
+```shell
+[root@localhost ~]# mysqldumpslow -s r -t 10 /var/lib/mysql/localhost-slow.log
+[root@localhost ~]# mysqldumpslow -s c -t 10 /var/lib/mysql/localhost-slow.log
+[root@localhost ~]# mysqldumpslow -s t -t 10 -g "left join" /var/lib/mysql/localhost-slow.log
+[root@localhost ~]# mysqldumpslow -s r -t 10  /var/lib/mysql/localhost-slow.log | more
+```
+
+
+
+## 3.3）批量数据脚本
+
+效果：往表里插入1000W数据
+
+### 3.3.1）建表
+
+```mysql
+CREATE TABLE `dept` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `deptno` mediumint unsigned NOT NULL DEFAULT '0',
+  `dname` varchar(20) NOT NULL DEFAULT '',
+  `loc` varchar(13) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+`deptno` 部门号 `dname` 部门名称 `loc` 楼层位置
+ 
+CREATE TABLE `emp` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `empno` mediumint unsigned DEFAULT '0',
+  `ename` varchar(20) NOT NULL DEFAULT '',
+  `job` varchar(9) NOT NULL DEFAULT '',
+  `mgr` mediumint unsigned NOT NULL DEFAULT '0',
+  `hiredate` date NOT NULL,
+  `sal` decimal(7,2) NOT NULL,
+  `comm` decimal(7,2) NOT NULL,
+  `deptno` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+# 字段解释 
+`empno` 编号 `ename` 名字 `job` 工作 `mgr` 上级编号 `hiredate` 入职时间 `sal` 薪水 `comm` 红利 `deptno` 部门编号
+ 
+```
+
+<img src="images/105.png" alt="105" style="zoom:80%;" />
+
+### 3.3.2）设置参数`log_trust_function_createors`
+
+<img src="images/106.png" alt="106" style="zoom:80%;" />
+
+```mysql
+show variables like 'log_bin_trust_function_creators';
+set global log_bin_trust_function_creators = 1;
+```
+
+
+
+### 3.3.3）创建函数保证每条数据都不同
+
+- 随机产生字符串
+- 随机产生部门编号
+
+```mysql
+######随机产生字符串
+DELIMITER $$
+CREATE FUNCTION rand_string(n INT) RETURNS VARCHAR(255)
+BEGIN 
+  DECLARE chars_str VARCHAR(100) DEFAULT 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  DECLARE retrun_str VARCHAR(255) DEFAULT '';
+  DECLARE i INT DEFAULT 0;
+  WHILE i<n DO
+  SET retrun_str=CONCAT(retrun_str,SUBSTRING(chars_str,FLOOR(1+RAND()*52),1));
+  SET i=i+1;
+  END WHILE;
+  RETURN retrun_str;
+  END $$
+  ####随机产生部门编号
+  DELIMITER $$
+  CREATE FUNCTION rand_num() RETURNS INT (5)
+  BEGIN 
+     DECLARE i INT DEFAULT 0;
+     SET i= FLOOR(100+RAND()*10);
+  RETURN i;
+  END $$   
+  
+#####如果要删除函数：
+drop function rand_num;
+```
+
+### 3.3.4）创建存储过程
+
+```mysql
+#执行存储过程，往emp表添加随机数据
+DELIMITER $$
+CREATE PROCEDURE insert_emp (IN START INT(10),IN max_num INT(10))
+BEGIN 
+DECLARE i INT DEFAULT 0;
+#set autocommit=0 把 autocommit设置成0，不要自动提交
+SET autocommit=0;
+REPEAT 
+SET i=i+1;
+INSERT INTO emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) VALUES(
+(START+i),rand_string(6),'SALESMAN',0001,CURDATE(),2000,400,rand_num());
+UNTIL i = max_num
+END REPEAT;
+COMMIT;
+END $$
+ 
+#执行存储过程，往dept表添加随机数据
+DELIMITER $$
+CREATE PROCEDURE insert_dept (IN START INT(10),IN max_num INT(10))
+BEGIN 
+DECLARE i INT DEFAULT 0;
+#set autocommit=0 把 autocommit设置成0，不要自动提交
+SET autocommit=0;
+REPEAT 
+SET i=i+1;
+INSERT INTO dept(deptno,dname,loc) VALUES(
+(START+i),rand_string(10),rand_string(8));
+UNTIL i = max_num
+END REPEAT;
+COMMIT;
+END $$
+```
+
+### 3.3.5）调用存储过程
+
+```mysql
+####插入10个部门数据
+DELIMITER ;
+CALL insert_dept(100,10); 
+#插入50万条数据
+DELIMITER ;
+CALL insert_emp(100001,500000);
+#插入50万条数据 
+DELIMITER ;
+CALL insert_emp(600001,500000);
+```
+
+
+
+## 3.4）Show profiles
+
+### 3.4.1）是什么
+
+是mysql提供可以用来分析当前会话中语句执行的资源消耗情况。可以用于SQL的调优测量
+
+### 3.4.2）官网
+
+官网：http://dev.mysql.com/doc/refman/5.5/en/show-profile.html
+
+### 3.4.3）默认状态
+
+默认情况下，参数处于关闭状态，并保存最近15次的运行结果
+
+### 3.4.4）分析步骤
+
+#### 3.4.4.1）是否支持，看看当前的SQL版本是否支持
+
+```mysql
+mysql> show variables like 'profiling%';
+```
+
+<img src="images/107.png" alt="107" style="zoom:80%;" />
+
+#### 3.4.4.2)开启功能，默认是关闭，使用前需要开启
+
+```mysql
+mysql> set profiling=on;
+```
+
+<img src="images/108.png" alt="108" style="zoom:80%;" />
+
+#### 3.4.4.3）运行SQL
+
+```mysql
+select * from emp group by id%10 limit 150000;
+select * from emp group by id%20 order by 5;
+```
+
+#### 3.4.4.4）查看结果，`show profiles;`
+
+```mysql
+mysql> show profiles;
+```
+
+<img src="images/109.png" alt="109" style="zoom:80%;" />
+
+#### 3.4.4.5）诊断SQL，`show profile cpu,block io for query 上一步前面的问题SQL 数字号码`
+
+![110](images/110.png)
+
+#### 3.4.4.6）参数备注
+
+```mysql
+SHOW PROFILE [type [, type] ... ]
+    [FOR QUERY n]
+    [LIMIT row_count [OFFSET offset]]
+
+type: {
+    ALL
+  | BLOCK IO
+  | CONTEXT SWITCHES
+  | CPU
+  | IPC
+  | MEMORY
+  | PAGE FAULTS
+  | SOURCE
+  | SWAPS
+}
+```
+
+<img src="images/111.png" alt="111" style="zoom:80%;" />
+
+#### 3.4.4.7）日常开发需要注意的结论
+
+##### ① converting HEAP to MyISAM 查询结果太大，内存都不够用了往磁盘上搬了。
+
+##### ②Creating tmp table 创建临时表
+
+- 拷贝数据到临时表
+- 用完再删除
+
+<img src="images/112.png" alt="112" style="zoom:90%;" />
+
+##### ③Copying to tmp table on disk 把内存中临时表复制到磁盘，危险！！！
+
+##### ④locked
+
+## 3.5）全局查询日志
+
+### 3.5.1）配置启用
+
+<img src="images/113.png" alt="113" style="zoom:80%;" />
+
+### 3.5.2）编码启用
+
+```mysql
+mysql> set global general_log=1;
+mysql> set global log_output='TABLE';
+mysql> select * from mysql.general_log;
+```
+
+<img src="images/114.png" alt="114" style="zoom:80%;" />
+
+<img src="images/115.png" alt="115" style="zoom:80%;" />
+
+### 3.5.3）永远不要在生产环境开启这个功能。【重点】
+
+
+
+# 四、Mysql锁机制
+
+## 4.1）概述
+
+锁是计算机协调多个进程或线程并发访问某一资源的机制。
+
+在数据库中，除传统的计算资源（如CPU、RAM、I/O等）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。
+
+### 4.1.1）生活购物
+
+<img src="images/117.png" alt="117" style="zoom:80%;" />
+
+### 4.1.2)锁的分类
+
+#### 4.1.2.1）从数据操作的类型（读、写）分类
+
+- 读锁（共享锁）：针对同一份数据，多个读操作可以同时进行而不会互相影响
+
+- 写锁（排它锁）：当前写操作没有完成前，它会阻断其他写锁和读锁。
+
+#### 4.1.2.2）从对数据操作的颗粒度
+
+- 表锁
+- 行锁
+
+### 4.2）三锁
+
+### 4.2.1）表锁（偏读）
+
+#### 4.2.1.1）特点
+
+偏向MyISAM存储引擎，开销小，加锁快，无死锁，锁定粒度大，发生锁冲突的概率最高，并发最低。
+
+#### 4.2.2.2）案例分析
+
+##### 4.2.2.2.1）建表SQL
+
+```mysql
+#表级锁分析，建表sql
+CREATE TABLE mylock(
+id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+NAME VARCHAR(20)
+)ENGINE MYISAM;
+ 
+INSERT INTO mylock(NAME) VALUES('a');
+INSERT INTO mylock(NAME) VALUES('b');
+INSERT INTO mylock(NAME) VALUES('c');
+INSERT INTO mylock(NAME) VALUES('d');
+INSERT INTO mylock(NAME) VALUES('e');
+ 
+SELECT * FROM mylock;
+
+【手动增加表锁】
+LOCK TABLE 表名字 READ(WRITE),表名字2 READ(WRITE),其他;
+【查看表上加过的锁】
+SHOW OPEN TABLES;
+ 
+【释放表锁】
+UNLOCK TABLES;
+ 
+【给mylock表加一把读锁，book表加一把写锁】
+mysql> lock table mylock read,book write;
+ 
+【释放表锁】
+unlock tables;
+```
+
+<img src="images/118.png" alt="118" style="zoom:80%;" />
+
+##### 4.2.2.2.2）加读锁
+
+```mysql
+【加读锁】
+mysql> lock table mylock read;
+mysql> update mylock set name='a2' where id =1;
+```
+
+![116](images/116.png)
+
+##### 4.2.2.2.3）加写锁
+
+```mysql
+mysql> lock table mylock write;
+mysql> update mylock set name='a4' where id =1;
+
+mysql> select * from mylock where id=1;
+```
+
+**总而言之一句话：就是读锁会阻塞写，但是不会阻塞读，而写锁则是把读和写都阻塞**
+
+<img src="images/119.png" alt="119" style="zoom:80%;" />
+
+#### 4.2.2.3）案例结论
+
+<img src="images/120.png" alt="120" style="zoom:80%;" />
+
+**总而言之一句话：就是读锁会阻塞写，但是不会阻塞读，而写锁则是把读和写都阻塞**
+
+#### 4.2.2.4）表锁分析
+
+```mysql
+mysql> show open tables;
+mysql> show status like 'table%';
+
+mysql> show status like 'table%';
++-----------------------+-------+
+| Variable_name         | Value |
++-----------------------+-------+
+| Table_locks_immediate | 53    |
+| Table_locks_waited    | 1     |
++-----------------------+-------+
+2 rows in set (0.00 sec)
+```
+
+<img src="images/121.png" alt="121" style="zoom:80%;" />
+
+### 4.2.2）行锁（偏写）
+
+#### 4.2.2.1）建表sql
+
+```mysql
+create table test_innodb_lock (a int(11),b varchar(16)) engine=innodb;
+ 
+insert into test_innodb_lock values(1,'b2');
+insert into test_innodb_lock values(3,'3');
+insert into test_innodb_lock values(4,'4000');
+insert into test_innodb_lock values(5,'5000');
+insert into test_innodb_lock values(6,'6000');
+insert into test_innodb_lock values(7,'7000');
+insert into test_innodb_lock values(8,'8000');
+insert into test_innodb_lock values(9,'9000');
+insert into test_innodb_lock values(1,'b1');
+ 
+create index test_innodb_a_ind on test_innodb_lock(a);
+create index test_innodb_lock_b_ind on test_innodb_lock(b);
+ 
+select * from test_innodb_lock;
+```
+
+#### 4.2.2.2）行锁定基本演示
+
+```mysql
+set autocommit =0;
+```
+
+![122](images/122.png)
+
+#### 4.2.2.3）无索引行锁升级为表锁
+
+varchar  不用 ' '  导致系统自动转换类型, 行锁变表锁
+
+![128](images/128.png)
+
+
+
+#### 4.2.2.4）间隙锁危害
+
+![123](images/123.png)
+
+- 【什么是间隙锁】
+  当我们用范围条件而不是相等条件检索数据，并请求共享或排他锁时，InnoDB会给符合条件的已有数据记录的索引项加锁；对于键值在条件范围内但并不存在的记录，叫做“间隙（GAP）"，InnoDB也会对这个“间隙”加锁，这种锁机制就是所谓的间隙锁（Next-Key锁）
+- 【危害】
+  因为Query执行过程中通过过范围查找的话，他会锁定整个范围内所有的索引键值，即使这个键值并不存在。
+  间隙锁有一个比较致命的弱点，就是当锁定一个范围键值之后，即使某些不存在的键值也会被无辜的锁定，而造成在锁定的时候法插入锁定键值范围内的任何数据。在某些场景下这可能会对性能造成很大的危害
+
+
+
+#### 4.2.2.5）面试题：常考如何锁定一行
+
+![125](images/125.png)
+
+
+
+#### 4.2.2.6）案例结论
+
+![129](images/129.png)
+
+#### 4.2.2.7）行锁分析
+
+```mysql
+mysql> show status like 'innodb_row_lock%';
+```
+
+<img src="images/126.png" alt="126" style="zoom:80%;" />
+
+**状态结果分析：**
+
+![130](images/130.png)
+
+#### 4.2.2.8）优化建议
+
+- 尽可能让所有数据检索都通过索引来完成，避免无索引行锁升级为表锁
+- 合理设计索引，尽量缩小锁的范围
+- 尽可能较少检索条件，避免间隙锁
+- 尽量控制事务大小，减少锁定资源量和时间长度
+- 尽可能低级别事务隔离
+
+### 4.2.3）页锁
+
+开销和加锁时间界于表锁和行锁之间：会出现死锁；锁定粒度界于表锁和行锁之间，并发度一般。
+
+目前了解一下即可。
+
+
+
+
+
 
 
 
